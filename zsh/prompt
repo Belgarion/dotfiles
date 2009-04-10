@@ -1,0 +1,105 @@
+#vim:ft=zsh
+precmd() {
+	local TERMWIDTH
+	#(( TERMWIDTH = ${COLUMNS} - 1 ))
+	TERMWIDTH=${COLUMNS}
+
+	###
+	# Truncate the path if it's too long.
+
+	PR_FILLBAR=""
+	PR_PWDLEN=""
+
+	#local promptsize=${#${(%):---(%n@%m:%l)---()--}}
+	local promptsize=${#${(%):-┐ (%n@%m) [%D{%H:%M:%S}|%D{%a %b %d}] []}}
+	local pwdsize=${#${(%):-%~}}
+
+	if [[ "$promptsize + $pwdsize" -gt $TERMWIDTH ]]; then
+		((PR_PWDLEN=$TERMWIDTH - $promptsize))
+	else
+		PR_FILLBAR="\${(l.(($TERMWIDTH - ($promptsize + $pwdsize)))..${PR_HBAR}.)}"
+	fi
+
+	if `which git-prompt >&/dev/null`; then
+		RPROMPT=$(git-prompt)
+	fi
+}
+
+setopt extended_glob
+preexec () {
+	if [ $STY ]; then
+		local CMD=${1[(wr)^(<*|*=*|sudo|exec|-*)]}
+		echo -n "\ek$CMD\e\\"
+	fi
+}
+
+setprompt() {
+	autoload colors zsh/terminfo
+	if [[ "$terminfo[colors]" -ge 8 ]]; then
+		colors
+	fi
+	for color in BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE; do
+		eval PR_$color='%{$terminfo[bold]$fg[${(L)color}]%}'
+		eval PR_LIGHT_$color='%{$fg[${(L)color}]%}'
+		(( count = $count + 1 ))
+	done
+	PR_NO_COLOR="%{$terminfo[sgr0]%}"
+
+	###
+	# See if we can use extended characters to look nicer.
+	#
+	typeset -A altchar
+	set -A altchar ${(s..)terminfo[acsc]}
+	PR_SET_CHARSET="%{$terminfo[enacs]%}"
+	PR_SHIFT_IN="%{$terminfo[smacs]%}"
+	PR_SHIFT_OUT="%{$terminfo[rmacs]%}"
+	PR_HBAR=${altchar[q]:--}
+	PR_ULCORNER=${altchar[l]:--}
+	PR_LLCORNER=${altchar[m]:--}
+	PR_LRCORNER=${altchar[j]:--}
+	PR_URCORNER=${altchar[k]:--}
+
+
+	###
+	# Decide if we need to set titlebar text.
+	#
+	case $TERM in
+		xterm*|screen*|rxvt*)
+		PR_TITLEBAR=$'%{\e]0;%(-=*[ROOT]*=- | .)%n@%m:%50>...>%~%>>\a%}'
+		;;
+		*)
+		PR_TITLEBAR=''
+		;;
+	esac
+
+	###
+	# Decide whether to set a screen title
+	if [ $STY ]; then
+		PR_STITLE=$'%{\ekzsh\e\\%}'
+	else
+		PR_STITLE=''
+	fi
+
+	###
+	# Finally, the prompt.
+
+	if [[ ${EUID} == 0 ]]; then
+		USERCOLOR=$PR_RED
+	elif [[ $HOSTNAME == "Belgarion" ]]; then
+		USERCOLOR=$PR_CYAN
+	elif [[ "${UNAMES%_*}" == "CYGWIN" ]]; then
+		USERCOLOR=$PR_LIGHT_GREEN
+	else
+		USERCOLOR=$PR_YELLOW
+	fi
+
+	PS1="$SET_CHARSET$PR_STITLE${(e)PR_TITLEBAR}\
+$PR_BLACK┐ ${chroot:+($PR_GREEN$chroot$PR_BLACK) }(${USERCOLOR}%n$PR_BLACK@%b$PR_LIGHT_CYAN%m$PR_BLACK) [$PR_CYAN%D{%H}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%M}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%S}$PR_BLACK|%b$PR_LIGHT_CYAN%D{%a %b %d}$PR_BLACK] [%b$PR_LIGHT_CYAN%$PR_PWDLEN<...<%~%<<$PR_BLACK]
+$PR_BLACK└%b$PR_LIGHT_CYAN──$PR_CYAN─>$PR_NO_COLOR "
+
+	#RPS1="$PR_LIGHT_YELLOW(%D{%m-%d %H:%M})$PR_NO_COLOR"
+	PS2="$PR_BLUE($PR_LIGHT_GREEN%_$PR_BLUE)$PR_NO_COLOUR "
+
+}
+
+setprompt

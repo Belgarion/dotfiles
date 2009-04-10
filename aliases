@@ -1,0 +1,290 @@
+#!/bin/bash
+
+UNAMES=`uname -s`
+
+konsole-title() { 
+	if [ $KONSOLE_DCOP_SESSION ]; then
+		if [[ "$@" == "" ]]; then 
+			dcop $KONSOLE_DCOP_SESSION sessionName
+		else
+			dcop $KONSOLE_DCOP_SESSION renameSession "$@"
+		fi
+	fi
+}
+screen-title() { echo -ne '\ek'$@'\e\\'; }
+alias screen_cmd='screen -d -r ${STY} -X '
+
+ssh() {
+	if [ $KONSOLE_DCOP_SESSION ]; then
+		#local NAME="`dcop $KONSOLE_DCOP_SESSION sessionName`" || NAME="`basename $SHELL`"
+		local NAME="`konsole-title`" || NAME="`basename $SHELL`"
+		konsole-title $1
+	elif [ $STY ]; then
+		local NAME="`basename $SHELL`"
+		screen-title $1
+	fi
+
+	if [ $ZSH_VERSION ]; then `whence -p ssh` $@;
+	else `which ssh` $@;
+	fi
+
+	if [ $KONSOLE_DCOP_SESSION ]; then konsole-title "$NAME";
+	elif [ $STY ]; then screen-title "$NAME";
+	fi
+}
+
+
+if [[ $UNAMES == "FreeBSD" ]]; then
+	alias dfh='df -hc -t nounionfs,nullfs '
+else
+	dfh() {
+		if (type calc &>/dev/null); then
+			local val=0
+			local total=0
+			local used=0
+			local free=0
+			local IFS=$'\n'
+			
+			df -h -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs $@
+			for i in `df -P -k -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs $@ | sed '1d'`
+			do 
+				val=$[`echo -n $i|awk '{print $2}'`]
+				total=$[$total+$val]
+				val=$[`echo -n $i|awk '{print $3}'`]
+				used=$[$used+$val]
+				val=$[`echo -n $i|awk '{print $4}'`]
+				free=$[$free+$val]
+			done
+			echo -------------------------------------------------------
+			echo "*                     `calc -p "round($total/1024/1024)"`G  `calc -p "round($used/1024/1024)"`G  `calc -p "round($free/1024/1024)"`G  `calc -p "round((100/$total)/(100/$used)*100)"`%   Total"
+		else 
+			echo "Install calc"
+			df -h -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs $@
+		fi
+	}
+fi
+
+alias cd..='cd ..'
+alias cal='cal -m'
+alias rm='rm -i'
+alias mv='mv -i'
+alias vim='vim -p'
+alias icl2ico='wrestool -x --output=. -t14'
+alias ico2png='for i in *.ico; do convert "$i" "$i.png"; done'
+alias sfv='cksfv -f'
+alias grep='grep --color=auto'
+(type yafc >&/dev/null) && alias ftp='yafc'
+alias samdump='bkhive2 system syskey.txt && samdump2 SAM syskey.txt'
+alias ifstat='ifstat -S'
+(type htop >&/dev/null) && alias top='htop'
+alias man='LC_ALL=C LANG=C man'
+alias extract_initrd_here='zcat /initrd.img | cpio -i -d -H newc --no-absolute-filenames'
+alias mplayer='mplayer -slang eng'
+alias screen='screen -U'
+alias wine='XMODIFIER="" XMODIFIERS="" wine'
+alias dm7020_path='export PATH=/opt/dm7020/bin:$PATH'
+alias du='du -c'
+alias fix_directory_permissions='find . -type d -exec sudo chmod ugo+x {} \;'
+alias nmap='nmap -A -T insane'
+alias mplayer_spdif='mplayer -ao alsa:device=spdif'
+alias scpresume='rsync --partial --progress --rsh=ssh'
+alias rm_thumbs.db='find . -iname thumbs.db -exec rm {} \;'
+alias psa='ps -ALf'
+alias rsync-cont='rsync -rlptDv --append'
+alias rsync='rsync --progress'
+alias info='pinfo'
+alias mouseacc='xset m 9/8 10'
+
+# Colored output start
+if (type grc >&/dev/null); then
+	alias cl='grc -es --colour=auto'
+	alias configure='cl ./configure'
+	alias diff='cl diff'
+	alias make='cl make'
+	alias gcc='cl gcc'
+	alias g++='cl g++'
+	alias as='cl as'
+	alias gas='cl gas'
+	alias ld='cl ld'
+	alias netstat='cl netstat'
+	alias ping='cl ping'
+	alias ping6='cl ping6'
+	alias traceroute='cl traceroute'
+	alias last='cl last'
+	ctail() { if (echo $PWD|grep log >&/dev/null); then grc -es -c conf.log tail $@; else grc -es tail $@; fi; }
+	ccat() { if (echo $PWD|grep log >&/dev/null); then grc -es -c conf.log cat $@; elif [ `echo $@|grep "\.cpp$\|\.h$\|\.c$"` ]; then spc $@; else grc -es cat $@; fi; }
+	alias tail='ctail'
+	alias cat='ccat'
+fi
+# Color end
+
+upre() { 
+	echo -n "uptime: `uptime | sed 's/.*up \(.*\),.*user.*/\1/'` :: record: "
+	if [[ "$UNAMES" == "FreeBSD" ]]; then
+		uprecords -asm1 | gsed 's/|.*//g;s/\(->\|\s\)\s*1\s*//;;s/  //g' | gawk 'NR==3 {print $LN}'
+	else
+		uprecords -asm1 | sed 's/|.*//g;s/\(->\|\s\)\s*1\s*//;;s/  //g' | gawk 'NR==3 {print $LN}'
+	fi
+}
+
+mod2ogg() { xmp -d wav -c $1 |sox -v1.5 -t wav - -t wav - |oggenc -o ${1%.*}.ogg -; }
+mid2wav() { timidity $1 -Ow --output-stereo -o $1.wav; }
+isomount() { sudo mount -t iso9660 -o loop $1 /mnt/cdrom; }
+ranpasswd() {
+	if [[ $1 -gt 0 ]]; then
+		local length="$1"
+		local count="$2"
+		local x=$(($length+10))
+		local y=$(($x-10))
+
+		for i in `seq 1 $count`; do
+			head -c $[$length*2] /dev/random | uuencode -m - | sed -n 2p | head -c $y
+			echo
+		done
+	else
+		echo "ranpasswd <length> [count]"
+	fi
+}
+
+if [[ "$UNAMES" == "FreeBSD" ]]; then
+	alias poweroff="shutdown -p now"
+	if [[ -f /usr/local/bin/gnuls ]]; then
+		if [ $CFORCE ]; then
+			eval `env TERM="vt100" dircolors -b /etc/DIR_COLORS 2> /dev/null`
+		else
+			eval `dircolors -b /etc/DIR_COLORS 2> /dev/null`
+		fi
+		alias ls="/usr/local/bin/gnuls --color=auto -F"
+	else
+		LSCOLORS="ExGxCxDxBxDxDxCxCxExEx"; export LSCOLORS
+		alias ls="ls -G -F"
+	fi
+elif [[ "$UNAMES" == "Linux" || "${UNAMES%_*}" == "CYGWIN" ]]; then
+	if [[ "$UNAMES" == "Linux" ]]; then
+		alias poweroff="shutdown -h now"
+	fi
+
+	# enable color support of ls and also add handy aliases
+	if [ "$TERM" != "dumb" ]; then
+		if [ -f ~/.DIR_COLORS ]; then
+			eval "`dircolors -b ~/.DIR_COLORS`"
+		elif [ -f /etc/DIR_COLORS ]; then
+			eval "`dircolors -b /etc/DIR_COLORS`"
+		fi
+
+		alias ls='ls --color=auto --ignore="lost+found" -F'
+		alias dir='ls --color=auto --format=vertical'
+		alias vdir='ls --color=auto --format=long'
+	fi
+elif [[ "$UNAMES" == "OpenBSD" || "$UNAMES" == "NetBSD" ]]; then
+	alias poweroff="shutdown -hp now"
+	if [[ -f /usr/local/bin/gls && "$UNAMES" == "OpenBSD" ]]; then
+		eval `dircolors -b /etc/DIR_COLORS 2> /dev/null`
+		alias ls="/usr/local/bin/gls --color=auto -F"
+	fi
+
+	if [[ "$UNAMES" == "NetBSD" ]]; then
+		if [[ -f /usr/pkg/bin/linuxls ]]; then
+			eval `dircolors -b /etc/DIR_COLORS ~ 2> /dev/null`
+			alias ls='/usr/pkg/bin/linuxls --color=tty -F'
+		elif [[ -f /usr/pkg/bin/colorls ]]; then
+			LSCOLORS="ExGxCxDxBxDxDxCxCxExEx"; export LSCOLORS
+			alias ls="/usr/pkg/bin/colorls -G -F"
+		fi
+	fi
+elif [[ "$UNAMES" == "Darwin" ]]; then
+	alias poweroff="poweroff-compat"
+	poweroff-compat()
+	{
+		if [[ "$1" == "-yes" ]]; then
+			shutdown -h now
+		else
+			echo "Use 'shutdown -yes' if you really mean it, " \
+			"if you are using OS X this can damage " \
+			"your files or your entire home folder !!!"
+		fi
+	}
+
+	if [[ -f /bin/cls ]]; then
+		alias ls="/bin/cls --color=auto -F"
+	else
+		if [[ `uname -r | awk -F '.' '{print $1}'` -ge "7" ]]; then
+			# to fix vim in aterm, do not forget to add to .Xdefaults:
+			# aterm*backspacekey: ^H (only in rooted mode !)
+			# aterm*colorBD: white
+			LSCOLORS="ExGxCxDxBxDxDxCxCxExEx"; export LSCOLORS
+			alias ls="ls -G -F"
+		fi
+	fi
+fi
+
+alias l='ls -CF'
+alias la='ls -A'
+alias la.='ls -Ad .*'
+alias ll='ls -l'
+alias ll.='ls -ld .*'
+
+
+#Gentoo specific
+#edep() { for i in /usr/portage/*/*/*.ebuild; do grep -H "DEPEND.*$1" $i; done; }
+alias esearch='esearch -S'
+edep() { for i in /var/db/pkg/*/*/*DEPEND; do grep -H "$1" $i; done; }
+pc(){ local i=0; while read; do ((i++)); done < <(printf "%s\n" /var/db/pkg/*/*/); echo "$i"; }
+pl(){ local i; for i in /var/db/pkg/*/*; do i="${i#/*/*/*/}"; echo "${i%-[0-9]*}"; done; } 
+eview() {
+	FILE=$(equery which $1)
+	if [ -f "$FILE" ]; then
+		view $FILE
+	fi
+}
+#End Gentoo specific
+
+
+
+##################################################################################
+##
+## _bashish_prompt_cwd is a prompt helper
+##
+## it provides the current working directory with:
+## * colored directory delimiters
+## * homedir replaced by homedir
+## * directory cutoff for a specified length
+##
+## USAGE:
+## _bashish_prompt_cwd [SEPCOLOR] [TXTCOLOR] [CUTOFF]
+##
+## SEPCOLOR is the escape sequence for setting the directory separator color
+## TXTCOLOR is the escape sequence for setting the directory text color
+## CUTOFF   is the amount of characters to print before cutting the directory
+##
+##################################################################################
+
+## chop off element by element and replace with "..." if not enough space
+if [ ! $ZSH_VERSION ]; then
+	alias rar='time rar'
+	alias tar='time tar'
+	alias emerge='time emerge'
+	function _bashish_prompt_cwd
+	{
+		typeset CWD="" DIR="" IFS=: PWD="$(pwd)" CWD="" IFS INT_MAX=9223372036854775807 SEPCOLOR=${1} TXTCOLOR=${2} CUTOFF=${3:-$INT_MAX}
+
+		if test "x$COLUMNS" = x
+		then
+			IFS=" "
+			for COLUMNS in $(stty size);do :;done
+			unset IFS
+		fi
+		eval "case \"$PWD\" in "$HOME"*) PWD=\${PWD:"${#HOME}"};CWD=\$TXTCOLOR\~;;/)CWD=\$SEPCOLOR/;esac"
+		test $(( $COLUMNS - ${#PWD} )) -lt ${CUTOFF} && { 
+			CWD=${TXTCOLOR}...
+			eval "PWD=\"\${PWD:$(( ${#PWD} - ( $COLUMNS - $CUTOFF ) ))}\""
+		}
+		IFS=/
+		for DIR in $PWD
+		do
+			CWD="$CWD${TXTCOLOR}$DIR${SEPCOLOR}/"
+		done
+		unset IFS
+		printf "${CWD%/}"
+	}
+fi

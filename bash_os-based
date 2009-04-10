@@ -1,0 +1,63 @@
+# vim:ft=sh
+if [[ "$UNAMES" == "FreeBSD" || "$UNAMES" == "OpenBSD" ]]; then
+	if [[ "$TERM" == "screen-256color" ]]; then
+		export TERM=xterm-256color
+	fi
+fi
+
+if [[ "$UNAMES" == "FreeBSD" ]]; then
+	if [[ ! -f ~/.inputrc ]]; then
+		echo 'set input-meta on
+		set output-meta on
+		set convert-meta off
+
+		$if mode=emacs
+
+		# for linux console and RH/Debian xterm
+		# allow the use of the Home/End keys
+		"\e[1~": beginning-of-line
+		"\e[4~": end-of-line
+
+		"\e[6~": history-search-forward
+		# allow the use of the Delete/Insert keys
+		"\e[3~": delete-char
+		"\e[2~": quoted-insert
+		# # mappings for Ctrl-left-arrow and Ctrl-right-arrow for word moving
+		"\e[5C": forward-word
+		"\e[5D": backward-word
+		"\e[1;5C": forward-word
+		"\e[1;5D": backward-word
+
+		# gnome-terminal (escape + arrow key)
+		"\e[5C": forward-word
+		"\e[5D": backward-word
+		# gnome-terminal (control + arrow key)
+		"\e[1;5C": forward-word
+		"\e[1;5D": backward-word
+		# konsole / xterm / rxvt (escape + arrow key)
+		"\e\e[C": forward-word
+		"\e\e[D": backward-word
+		# konsole (alt + arrow key)
+		"\e[1;3C": forward-word
+		"\e[1;3D": backward-word
+		# konsole (control + arrow key)
+		"\e[1;3C": forward-word
+		"\e[1;3D": backward-word
+		# aterm / eterm (control + arrow key)
+		"\eOc": forward-word
+		"\eOd": backward-word
+
+		# for freebsd console
+		"\e[H": beginning-of-line
+		"\e[F": end-of-line
+		$endif' > ~/.inputrc
+	fi
+
+	export LANG=sv_SE.UTF-8
+	export PACKAGESITE="ftp://ftp.sunet.se/pub/FreeBSD/releases/i386/7.1-RELEASE/packages/Latest/"
+	export FTP_PASSIVE_MODE=1
+fi
+
+if [[ "$UNAMES" == "OpenBSD" ]]; then
+	export PKG_PATH="ftp://ftp.sunet.se/pub/OpenBSD/4.3/packages/i386"
+fi

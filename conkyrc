@@ -1,0 +1,126 @@
+# UBUNTU-CONKY
+# A comprehensive conky script, configugrey for use on
+# Ubuntu / Debian Gnome, without the need for any external scripts.
+#
+# Based on conky-jc and the default .conkyrc.
+# INCLUDES:
+# - tail of /var/log/messages 
+# - netstat connections to your computer
+#
+# -- Pengo (conky@pengo.us)
+#
+
+# Create own window instead of using desktop (required in nautilus)
+#own_window yes
+#background no
+#own_window_type desktop
+#own_window_transparent yes
+#own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+
+# Use double buffering (reduces flicker, may not work for everyone)
+double_buffer yes
+
+# fiddle with window
+use_spacer yes
+use_xft yes
+
+# Xft font when Xft is enabled
+xftfont Verdana:size=8
+
+# Text alpha when using Xft
+xftalpha 1.0
+
+# Update interval in seconds
+update_interval 1.0
+
+# Minimum size of text area
+# minimum_size 50 5
+
+maximum_width 200
+
+# Draw shades? was no
+draw_shades no
+
+# Text stuff
+default_outline_color white
+draw_outline yes # amplifies text if yes
+draw_borders no
+uppercase no # set to yes if you want all text to be in uppercase
+
+# Stippled borders?
+stippled_borders 3
+
+# border margins
+border_margin 9
+
+# border width
+border_width 10
+
+# Default colors and also border colors, grey90 == #e5e5e5
+default_color black
+
+own_window_colour brown
+own_window_transparent yes
+
+# Text alignment, other possible values are commented
+#alignment top_left
+alignment top_right
+#alignment bottom_left
+#alignment bottom_right
+
+# Gap between borders of screen and text
+gap_x 10
+gap_y 200
+
+# stuff after 'TEXT' will be formatted on screen
+TEXT
+$color
+${color grey}${outlinecolor black}SYSTEM ${hr 2}$color$outlinecolor
+$nodename on $machine
+$sysname $kernel 
+Uptime: $uptime
+
+${color grey}${outlinecolor black}CPU ${hr 2}$color$outlinecolor
+Pentium 4 ${freq}MHz${alignr}Usage: $cpu%
+$cpubar
+
+${color grey}${outlinecolor black}TEMP ${hr 2}$color$outlinecolor
+CPU:$alignr${exec calc -m0 `tail /sys/class/hwmon/hwmon0/device//temp2_input`/1000|sed s/\	//g}ºC
+M/B:$alignr${exec calc -m0 `tail /sys/class/hwmon/hwmon0/device//temp1_input`/1000|sed s/\	//g}ºC
+sda:$alignr${hddtemp /dev/sda}
+sdb:$alignr${hddtemp /dev/sdb}
+sdc:$alignr${hddtemp /dev/sdc}
+
+${color grey}${outlinecolor black}FANS ${hr 2}$color$outlinecolor
+CPU:$alignr${exec tail /sys/class/hwmon/hwmon0/device//fan2_input}RPM
+Chassi:$alignr${exec tail /sys/class/hwmon/hwmon0/device//fan1_input}RPM
+
+${color grey}${outlinecolor black}MEMORY USAGE ${hr 2}$color$outlinecolor
+RAM:	$mem/$memmax$alignr$memperc%
+${membar 6}$color
+Swap:	$swap/$swapmax$alignr$swapperc%
+${swapbar 6}$color
+
+${color grey}${outlinecolor black}DISK USAGE ${hr 2}$color$outlinecolor
+/:$alignr${fs_used /} / ${fs_size /}
+${fs_bar 6 /}$color 
+/home:$alignr${fs_used /home} / ${fs_size /home}
+${fs_bar 6 /home}$color
+/Laddat:$alignr${fs_used /media/Laddat} / ${fs_size /media/Laddat}
+${fs_bar 6 /media/Laddat}$color
+/md0:$alignr${fs_used /media/Unrar} / ${fs_size /media/Unrar}
+${fs_bar 6 /media/Unrar}$color
+/md1:$alignr${fs_used /mnt/Bränna} / ${fs_size /mnt/Bränna}
+${fs_bar 6 /mnt/Bränna}$color
+/pxe:$alignr${fs_used /pxe} / ${fs_size /pxe}
+${fs_bar 6 /pxe}$color
+/usr/portage:$alignr${fs_used /usr/portage} / ${fs_size /usr/portage}
+${fs_bar 6 /usr/portage}$color
+/Windows:$alignr${fs_used /media/sda1} / ${fs_size /media/sda1}
+${fs_bar 6 /media/sda1}$color
+
+${color grey}${outlinecolor black}NETWORK (${addr eth0}) ${hr 2}$color$outlinecolor
+Down: $color${downspeed eth0}k/s ${alignr}Up: ${upspeed eth0}k/s
+${downspeedgraph eth0 25,99 000000 ff0000} ${alignr}${upspeedgraph eth0 
+25,99 000000 00ff00}$color
+Total Downloaded: ${totaldown eth0}

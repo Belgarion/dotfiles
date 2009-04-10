@@ -1,0 +1,9 @@
+#vim: ft=zsh
+export MPD_HOST="mpdpassword@polgara"
+if [[ $HOST == "Belgarion" ]]; then
+	export PYOGRE_ROOT="/home/sebastian/Source/pyogre/root"
+	export PYTHONPATH=/home/sebastian/Source/pyogre/root/usr/lib/python2.5/site-packages
+	export LD_LIBRARY_PATH=/usr/local/lib/personal:/home/sebastian/Source/pyogre/root/usr/lib/
+	export PATH=$PATH:/opt/android-sdk-linux_x86-1.0_r2/tools
+	export PATH=$PATH:/opt/cegcc/bin:/opt/mingw32ce/bin
+fi

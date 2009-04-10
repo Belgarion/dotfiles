@@ -1,0 +1,99 @@
+#vim:ft=zsh
+
+# Options.    See zshoptions(1) {{{
+### Changing Directories ### {{{{
+# If a command is issued that can't be executed as a normal command, and the command is the name of a directory, perform the cd command to that directory. 
+setopt auto_cd
+# Make cd push the old directory onto the directory stack.
+setopt auto_pushd
+# Do not print the directory stack after pushd or popd.
+setopt pushd_silent
+# Have pushd with no arguments act like `pushd $HOME'.
+setopt pushd_to_home
+#}}}
+### Completion ### {{{
+# Don't do menu completion
+setopt auto_menu
+# Show possible matches if completion can't figure out what to do.
+setopt auto_list
+# If a parameter is completed whose content is the name of a directory, then add a space instead of a trailing slash.
+setopt no_auto_param_slash
+# Use variable width columns for completion options
+setopt list_packed
+#}}}
+### Expansion and Globbing ### {{{
+# Treat the `#', `~' and `^' characters as part of patterns for filename generation, etc.  (An initial unquoted `~' always produces named directory expansion.)
+setopt extended_glob
+# Do completion on <value> in foo=<value>
+setopt magic_equal_subst
+# Don't error if globbing fails; just leave the globbing chars in.
+setopt no_nomatch
+#}}}
+### History ### {{{
+# History commands are appended to the existing file instead of overwriting it.
+setopt append_history
+# Puts more info in the history file
+setopt extended_history
+# Sequential duplicate commands only get one history entry.
+setopt hist_ignore_dups
+# Commands are added to the history file as they are entered.
+setopt inc_append_history
+#}}}
+### Input/Output ### {{{
+# Prevent accidental overwriting of files with >
+setopt no_clobber
+# Try to correct the spelling of all arguments in a line.
+setopt correct_all
+# Turns off C-S/C-Q flow control
+setopt no_flow_control
+# Print a warning message if a mail file has been accessed since the shell last checked.
+setopt mail_warning
+# Allow  the  character  sequence  `''' to signify a single quote within singly quoted strings.  Note this does not apply in quoted strings using the format $'...', 
+#	where a backslashed single quote can be used.
+setopt rc_quotes
+# Bug me about it if I type 'rm *'.
+setopt rm_star_wait
+#}}}
+### Job Control ### {{{
+# Commands without arguments will first try to resume suspended programs of the same name.
+setopt auto_resume
+# Don't run background jobs at lower priority.
+setopt no_bg_nice
+# List jobs in the long format by default.
+setopt long_list_jobs
+# Report the status of background jobs immediately, rather than waiting until just before printing a prompt.
+setopt notify
+#}}}
+### Scripts and Functions ### {{{
+# Print hex numbers like 0x7F instead of 16#7F
+setopt c_bases
+# print octal numbers like 037 instead of 8#37
+setopt octal_zeroes
+#}}}
+#}}}
+# Parameters. See zshparam(1) {{{
+# Extensions to ignore for completion.
+FIGNORE=".o:~"
+# Where to save my command history
+#HISTFILE=~/.zsh_history
+HISTFILE=/dev/null
+# Remember the last 5000 commands.
+HISTSIZE=5000
+#Ignore this command from history
+HISTIGNORE="fg"
+# Save the last 3000 commands.
+SAVEHIST=3000
+# Only ask if completion listing would scroll off screen
+LISTMAX=0
+# Check for logins/logouts every 5 minutes
+LOGCHECK=300
+# Never look at my mail spool.
+MAILCHECK=0
+# Give timing statistics for programs that take longer than a minute to
+# run.
+REPORTTIME=60
+# Report on any log(in|out)s not from my username on systems that I administer.
+WATCH=notme
+# Format to use for watch messages.
+WATCHFMT='%n %a %l from %m at %T.'
+#}}}

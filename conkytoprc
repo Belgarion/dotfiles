@@ -1,0 +1,8 @@
+background no
+out_to_console
+update_interval 1
+use_spacer none
+
+TEXT
+^fg(#92b19e)CPU^fg():^fg(#92b19e)${cpu}% ^fg()::^fg(#99cc33)^i(.dzen/down.xbm) ^fg(#99cc33)${downspeed eth0} kB/s ^fg(#ff3300)^i(.dzen/up.xbm) ^fg(#ff3300)${upspeed eth0} kB/s ^fg():: ^fg(#ffffff)${time %a %b %d %H:%M:%S} 
+
