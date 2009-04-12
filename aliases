@@ -13,6 +13,7 @@ konsole-title() {
 }
 screen-title() { echo -ne '\ek'$@'\e\\'; }
 alias screen_cmd='screen -d -r ${STY} -X '
+alias screen="TERM=xterm-256color screen"
 
 ssh() {
 	if [ $KONSOLE_DCOP_SESSION ]; then
@@ -80,7 +81,6 @@ alias ifstat='ifstat -S'
 alias man='LC_ALL=C LANG=C man'
 alias extract_initrd_here='zcat /initrd.img | cpio -i -d -H newc --no-absolute-filenames'
 alias mplayer='mplayer -slang eng'
-alias screen='screen -U'
 alias wine='XMODIFIER="" XMODIFIERS="" wine'
 alias dm7020_path='export PATH=/opt/dm7020/bin:$PATH'
 alias du='du -c'
