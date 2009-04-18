@@ -282,13 +282,18 @@ if has("autocmd")
 	au BufReadCmd *.jar,*.war,*.ear,*.sar,*.rar,*.xpi call zip#Browse(expand("<amatch>"))
 
 	" omnicomplete
-	autocmd FileType python set omnifunc=pythoncomplete#Complete
 	autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 	autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 	autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 	autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 	autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 	autocmd FileType c set omnifunc=ccomplete#CompleteCpp
+
+	" Python {{{
+	autocmd FileType python set omnifunc=pythoncomplete#Complete
+	autocmd BufRead *.py set makeprg=python\ -c\ \"import\ py_compile,sys;\ sys.stderr=sys.stdout;\ py_compile.compile(r'%')\"
+	autocmd BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
+	" }}}
 endif
 "}}}
 " {{{ Theme
