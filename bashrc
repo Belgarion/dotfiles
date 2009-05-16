@@ -7,15 +7,11 @@
 
 UNAMES=`uname -s`
 export UNAMES
-#if [ "$UNAMES" = "Linux" ]; then
-#	UTF8=1
-#fi
+
 echo $LANG | grep -i utf >/dev/null && UTF8=1 || UTF8=0
 
 # don't put duplicate lines in the history. See bash(1) for more options
 export HISTCONTROL=ignoredups
-# ... and ignore same sucessive entries.
-export HISTCONTROL=ignoreboth
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -32,18 +28,6 @@ if [ -z "$chroot" ] && [ -r /etc/gentoo_chroot ]; then
     chroot=$(cat /etc/gentoo_chroot)
 fi
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-# case "$TERM" in
-# xterm-color)
-#    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-#    ;;
-# *)
-#    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-#     ;;
-# esac
-
-# Comment in the above and uncomment this below for a color prompt
-# PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 if [[ `hostname` == "Belgarion" ]]; then
 	USERCOLOR="\e[1;36m"
 elif [[ "${UNAMES%_*}" == "CYGWIN" ]]; then
@@ -55,9 +39,9 @@ else
 fi
 
 if [[ $UTF8 -eq 1 ]]; then
-	PS1='\[\e[1;30m\]┐ ${chroot:+(\[\e[1;32m\]$chroot\[\e[1;30m\]) }(`echo -e ${USERCOLOR}`\u\[\e[1;30m\]@\[\e[0;36m\]\h\[\e[1;30m\]) [\[\e[1;36m\]\t\[\e[0;36m\]\[\e[6D:\]\[\e[2C:\]\[\e[2C\]\[\e[1;30m\]|\[\e[0;36m\]\d\[\e[1;30m\]] [\[\e[0;36m\]`_bashish_prompt_cwd "\[\e[1;30m\]" "\[\e[0;36m\]" 58`\[\e[1;30m\]] \n\[\e[1;30m\]└\[\e[0;36m\]──\[\e[1;36m\]─>\[\e[0m\] '
+	PS1='\[\e[1;30m\]┐ ${chroot:+(\[\e[1;32m\]$chroot\[\e[1;30m\]) }('${USERCOLOR}'\u\[\e[1;30m\]@\[\e[0;36m\]\h\[\e[1;30m\]) [\[\e[1;36m\]\t\[\e[0;36m\]\[\e[6D:\]\[\e[2C:\]\[\e[2C\]\[\e[1;30m\]|\[\e[0;36m\]\d\[\e[1;30m\]] [\[\e[0;36m\]`_bashish_prompt_cwd "\[\e[1;30m\]" "\[\e[0;36m\]" 58`\[\e[1;30m\]] \n\[\e[1;30m\]└\[\e[0;36m\]──\[\e[1;36m\]─>\[\e[0m\] '
 else
-	PS1='\[\e[1;30m\]${chroot:+(\[\e[1;32m\]$chroot\[e[1;30m\]) }(`echo -e $USERCOLOR`\u\[\e[1;30m\]@\[\e[0;36m\]\h\[\e[1;30m\]) [\[\e[1;36m\]\t\[\e[0;36m\]\[\e[6D:\]\[\e[2C:\]\[\e[2C\]\[\e[1;30m\]|\[\e[0;36m\]\d\[\e[1;30m\]] [\[\e[0;36m\]`_bashish_prompt_cwd "\[\e[1;30m\]" "\[\e[0;36m\]" 58`\[\e[1;30m\]] \n\[\e[1;36m\]>\[\e[0m\] '
+	PS1='\[\e[1;30m\]${chroot:+(\[\e[1;32m\]$chroot\[e[1;30m\]) }('$USERCOLOR'\u\[\e[1;30m\]@\[\e[0;36m\]\h\[\e[1;30m\]) [\[\e[1;36m\]\t\[\e[0;36m\]\[\e[6D:\]\[\e[2C:\]\[\e[2C\]\[\e[1;30m\]|\[\e[0;36m\]\d\[\e[1;30m\]] [\[\e[0;36m\]`_bashish_prompt_cwd "\[\e[1;30m\]" "\[\e[0;36m\]" 58`\[\e[1;30m\]] \n\[\e[1;36m\]>\[\e[0m\] '
 fi
 
 # If this is an xterm set the title to user@host:dir
@@ -70,21 +54,14 @@ xterm*|rxvt*|screen*)
 esac
 
 # Aliases
-if [ -f ~/.aliases ]; then
-    . ~/.aliases
-fi
+[ -f ~/.aliases ] && . ~/.aliases
 
-if [ -f ~/.screenconf.sh ]; then
-	. ~/.screenconf.sh
-fi
+#Configure screen
+[ -f ~/.screenconf.sh ] && . ~/.screenconf.sh
 
-if [ -d ~/bin ]; then
-	PATH=~/bin:"${PATH}"
-fi
+[ -d ~/bin ] && PATH=~/bin:"${PATH}"
 
-if [ -f ~/.bash_os-based ]; then
-	. ~/.bash_os-based
-fi
+[ -f ~/.bash_os-based ] && . ~/.bash_os-based
 
 (which vimmanpager >&/dev/null) && export MANPAGER="vimmanpager"
 if (which most >&/dev/null); then
@@ -103,9 +80,7 @@ export MOZ_DISABLE_PANGO=1
 export MPD_HOST="mpdpassword@polgara.home"
 
 # Colorful message
-if which toilet >&/dev/null; then
-	toilet --gay "$UNAMES "
-fi
+if which toilet >&/dev/null; toilet --gay "$UNAMES "
 
 if [ -e ~/TODO ]; then
 	if [[ $SHLVL -eq 4 || $SHLVL -eq 5 ]]; then

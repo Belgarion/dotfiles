@@ -13,7 +13,7 @@ konsole-title() {
 }
 screen-title() { echo -ne '\ek'$@'\e\\'; }
 alias screen_cmd='screen -d -r ${STY} -X '
-alias screen="TERM=xterm-256color screen"
+#alias screen='TERM=xterm-256color screen' #causes problems with terminfo on resume
 
 ssh() {
 	if [ $KONSOLE_DCOP_SESSION ]; then
@@ -46,8 +46,8 @@ else
 			local free=0
 			local IFS=$'\n'
 			
-			df -h -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs $@
-			for i in `df -P -k -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs $@ | sed '1d'`
+			df -h -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs -x devpts $@
+			for i in `df -P -k -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs -x devpts $@ | sed '1d'`
 			do 
 				val=$[`echo -n $i|awk '{print $2}'`]
 				total=$[$total+$val]
@@ -81,6 +81,7 @@ alias ifstat='ifstat -S'
 alias man='LC_ALL=C LANG=C man'
 alias extract_initrd_here='zcat /initrd.img | cpio -i -d -H newc --no-absolute-filenames'
 alias mplayer='mplayer -slang eng'
+mplayer_rar() { unrar p -inul $1 | mplayer - }
 alias wine='XMODIFIER="" XMODIFIERS="" wine'
 alias dm7020_path='export PATH=/opt/dm7020/bin:$PATH'
 alias du='du -c'

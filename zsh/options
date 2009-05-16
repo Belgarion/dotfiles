@@ -1,4 +1,4 @@
-#vim:ft=zsh
+# vim: ft=zsh
 
 # Options.    See zshoptions(1) {{{
 ### Changing Directories ### {{{{

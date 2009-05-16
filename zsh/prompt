@@ -1,7 +1,6 @@
-#vim:ft=zsh
+# vim: ft=zsh
 precmd() {
 	local TERMWIDTH
-	#(( TERMWIDTH = ${COLUMNS} - 1 ))
 	TERMWIDTH=${COLUMNS}
 
 	###
@@ -20,9 +19,7 @@ precmd() {
 		PR_FILLBAR="\${(l.(($TERMWIDTH - ($promptsize + $pwdsize)))..${PR_HBAR}.)}"
 	fi
 
-	if `which git-prompt >&/dev/null`; then
-		RPROMPT=$(git-prompt)
-	fi
+	which git-prompt >&/dev/null && RPROMPT=$(git-prompt)
 }
 
 setopt extended_glob
@@ -83,7 +80,7 @@ setprompt() {
 	###
 	# Finally, the prompt.
 
-	if [[ ${EUID} == 0 ]]; then
+	if [[ $EUID == 0 ]]; then
 		USERCOLOR=$PR_RED
 	elif [[ $HOSTNAME == "Belgarion" ]]; then
 		USERCOLOR=$PR_CYAN
@@ -93,9 +90,16 @@ setprompt() {
 		USERCOLOR=$PR_YELLOW
 	fi
 
-	PS1="$SET_CHARSET$PR_STITLE${(e)PR_TITLEBAR}\
+	if [[ $HOSTNAME == 'nas' ]]; then
+		PS1="$PR_SET_CHARSET$PR_STITLE${(e)PR_TITLEBAR}\
+$PR_BLACK${chroot:+($PR_GREEN$chroot$PR_BLACK) }(${USERCOLOR}%n$PR_BLACK@%b$PR_LIGHT_CYAN%m$PR_BLACK) [$PR_CYAN%D{%H}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%M}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%S}$PR_BLACK|%b$PR_LIGHT_CYAN%D{%a %b %d}$PR_BLACK] [%b$PR_LIGHT_CYAN%$PR_PWDLEN<...<%~%<<$PR_BLACK]
+$PR_CYAN>$PR_NO_COLOR "
+	else
+		PS1="$PR_SET_CHARSET$PR_STITLE${(e)PR_TITLEBAR}\
 $PR_BLACK┐ ${chroot:+($PR_GREEN$chroot$PR_BLACK) }(${USERCOLOR}%n$PR_BLACK@%b$PR_LIGHT_CYAN%m$PR_BLACK) [$PR_CYAN%D{%H}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%M}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%S}$PR_BLACK|%b$PR_LIGHT_CYAN%D{%a %b %d}$PR_BLACK] [%b$PR_LIGHT_CYAN%$PR_PWDLEN<...<%~%<<$PR_BLACK]
 $PR_BLACK└%b$PR_LIGHT_CYAN──$PR_CYAN─>$PR_NO_COLOR "
+	fi
+
 
 	#RPS1="$PR_LIGHT_YELLOW(%D{%m-%d %H:%M})$PR_NO_COLOR"
 	PS2="$PR_BLUE($PR_LIGHT_GREEN%_$PR_BLUE)$PR_NO_COLOUR "

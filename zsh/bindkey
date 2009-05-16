@@ -1,4 +1,4 @@
-#vim:ft=zsh
+# vim: ft=zsh
 
 # Keyboard mapping {{{
 # Use Emacs-style bindings.
@@ -75,4 +75,6 @@ bindkey '^[[6~' down-line-or-history
 bindkey "^r" history-incremental-search-backward
 bindkey ' ' magic-space    # also do history expansion on space
 bindkey '^I' complete-word # complete on tab, leave expansion to _expand
+bindkey '^[[7~' beginning-of-line
+bindkey '^[[8~' end-of-line
 #}}}

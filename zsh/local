@@ -1,4 +1,4 @@
-#vim: ft=zsh
+# vim: ft=zsh
 export MPD_HOST="mpdpassword@polgara"
 if [[ $HOST == "Belgarion" ]]; then
 	export PYOGRE_ROOT="/home/sebastian/Source/pyogre/root"
