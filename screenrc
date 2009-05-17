@@ -1,11 +1,14 @@
+autodetach on
 activity "%c activity -> %n%f %t"
 startup_message off
+crlf off
+defscrollback 1000
+silencewait 15
+pow_detach_msg "Screen session of \$LOGNAME \$:cr:\$:nl:ended."
 altscreen on
 term screen-256color
 utf8 on
 defutf8 on
-vbell off
-
 escape ^aa
 
 hardcopy_append on
