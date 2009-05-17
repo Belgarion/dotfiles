@@ -1,10 +1,11 @@
 #!/bin/sh
 dir=`pwd`
-mkdir $dir/old
+timestamp=`date +%s`
+mkdir $dir/old.$timestamp
 for i in *; do
-	[[ $i == "install.sh" || $i == "README" ]] && continue
-	if [[ -f ~/.$i ]]; then
-		cp ~/.$i $dir/old/$i
+	[[ $i == "install.sh" || $i == "README" || ${i%%.*} == "old" ]] && continue
+	if [[ -f ~/.$i || -d ~/.$i ]]; then
+		cp -a ~/.$i $dir/old.$timestamp/$i
 
 		echo "~/.$i already exists, overwrite? [y/n] "
 		read yn
