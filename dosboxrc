@@ -197,4 +197,5 @@ ipx=false
 [autoexec]
 # Lines in this section will be run at startup.
 mount c: /media/Laddat/Spel
+c:
 
