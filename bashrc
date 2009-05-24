@@ -80,7 +80,7 @@ export MOZ_DISABLE_PANGO=1
 export MPD_HOST="mpdpassword@polgara.home"
 
 # Colorful message
-if which toilet >&/dev/null; toilet --gay "$UNAMES "
+which toilet >&/dev/null && toilet --gay "$UNAMES "
 
 if [ -e ~/TODO ]; then
 	if [[ $SHLVL -eq 4 || $SHLVL -eq 5 ]]; then

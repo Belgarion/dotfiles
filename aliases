@@ -81,7 +81,7 @@ alias ifstat='ifstat -S'
 alias man='LC_ALL=C LANG=C man'
 alias extract_initrd_here='zcat /initrd.img | cpio -i -d -H newc --no-absolute-filenames'
 alias mplayer='mplayer -slang eng'
-mplayer_rar() { unrar p -inul $1 | mplayer - }
+mplayer_rar() { unrar p -inul $1 | mplayer - ; }
 alias wine='XMODIFIER="" XMODIFIERS="" wine'
 alias dm7020_path='export PATH=/opt/dm7020/bin:$PATH'
 alias du='du -c'
