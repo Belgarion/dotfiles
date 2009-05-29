@@ -86,9 +86,9 @@ main = do
     let myWidth = read (show (widthOfScreen scr)) :: Int
     let myHeight = read (show (heightOfScreen scr)) :: Int
 
-    let myStatusBar = "dzen2 -x '0' -y '0' -h '16' -w " ++ show (myWidth - 580) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed'"
-    let myTopBar = "conky -c ~/.conkytoprc | dzen2 -x " ++ show (myWidth - 580) ++ " -y '0' -h '16' -w '580' -ta 'r' -bg '" ++ myNormalBGColor  ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed'"
-    let myBottomBar = "conky -c ~/.conkybottomrc | dzen2 -x '0' -y " ++ show (myHeight - 16) ++ " -h '16' -w " ++ show (myWidth-128) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn '" ++ myFont ++ "'"
+    let myStatusBar = "dzen2 -x '0' -y '0' -h '16' -w " ++ show (myWidth - 580) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e ''"
+    let myTopBar = "conky -c ~/.conkytoprc | dzen2 -x " ++ show (myWidth - 580) ++ " -y '0' -h '16' -w '580' -ta 'r' -bg '" ++ myNormalBGColor  ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e ''"
+    let myBottomBar = "conky -c ~/.conkybottomrc | dzen2 -x '0' -y " ++ show (myHeight - 16) ++ " -h '16' -w " ++ show (myWidth-128) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn '" ++ myFont ++ "' -e ''"
     din <- spawnPipe myStatusBar
     din2 <- spawnPipe myTopBar
     din3 <- spawnPipe myBottomBar
@@ -97,7 +97,7 @@ main = do
     spawn ("xsetroot -solid '" ++ myNormalBGColor ++ "'") -- set background color
     spawn "numlockx on" -- activate numlock
     spawn "xsetroot -cursor_name left_ptr" --set mouse cursor
-    spawn "eval `cat ~/.fehbg` &" -- set background
+    spawn "nitrogen --restore" -- set background
 
     file <- doesFileExist "/tmp/xmonad_restart"
     if (file)
@@ -123,6 +123,7 @@ main = do
        }
 
 startup = do
+    spawn "xset -b b off" -- disable bell
     spawn "xset m 9/8 10" --mouse acceleration
     --spawn "xmodmap ~/.Xmodmap" -- Xmodmap
     spawn "xrdb -merge ~/.Xdefaults"
@@ -131,9 +132,9 @@ startup = do
     spawn "azureus"
     spawn "pidgin"
     spawn "akregator"
-    spawn "/home/sebastian/C++/irssi-notifier/daemon >&/dev/null" -- irssi notification dameon
+    spawn (myHome ++ "/C++/irssi-notifier/daemon >&/dev/null") -- irssi notification dameon
     spawn "korgac --miniicon korganizer"
-    spawn "/home/sebastian/bin/start_gnome-screensaver"
+    spawn (myHome ++ "/bin/start_gnome-screensaver")
     spawn "gnome-screensaver-command --lock"
 
 restart_xmonad :: X ()
@@ -144,7 +145,7 @@ restart_xmonad = do
 
 restart_dzen :: IO ()
 restart_dzen = do
-    spawn "killall dzen2"
+    spawn "killall conky"
 
     d <- catch (getEnv "DISPLAY") ( const $ return [])
     dpy <- openDisplay d
@@ -188,8 +189,7 @@ myXPConfig = defaultXPConfig
 -- Key bindings:
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask,   xK_Return), spawn $ XMonad.terminal conf)
-    , ((mod4Mask,                xK_t     ), spawn "icedove")
-    , ((mod4Mask,                xK_o     ), spawn "openoffice")
+    , ((mod4Mask,                xK_w     ), spawn "nitrogen --sort=alpha ~/Wallpapers")
     , ((mod4Mask,                xK_p     ), shellPrompt myXPConfig)
     , ((mod4Mask,                xK_l     ), spawn "gnome-screensaver-command --lock")
     , ((modMask,                 xK_Print ), spawn "scrot desk_%Y-%m-%d.png -d 1") -- take a screenshot
@@ -227,7 +227,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((0, 0x1008ff14), spawn "mpc2 toggle")                 -- XF86AudioPlay
 
     , ((modMask .|. controlMask, xK_q), io (exitWith ExitSuccess)) -- quit xmonad
-    , ((modMask .|. controlMask, xK_r), restart_xmonad) -- restart xmonad
+    , ((modMask .|. shiftMask .|. controlMask, xK_r), restart_xmonad) -- restart xmonad
+    , ((modMask .|. controlMask, xK_r), catchIO restart_dzen) -- restart dzen
     --, ((modMask .|. controlMask, xK_r), spawn "killall conky dzen2 stalonetray" >> restart "xmonad" True) -- restart xmonad
     ]
     ++
@@ -259,7 +260,6 @@ myManageHook = composeAll . concat $
     , [className =? "Firefox-bin" --> doF (W.shift "2:www")]
     , [className =? "Akregator" --> doF (W.shift "3:rss")]
     , [className =? "Pidgin" --> doF (W.shift "4:im")]
-    , [className =? "Azureus" --> doF (W.shift "5")]
     ]
     where
     myFloats = ["ekiga", "Gimp", "gimp", "MPlayer", "Nitrogen", "Transmission-gtk", "Xmessage", "xmms"]
