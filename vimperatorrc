@@ -1,11 +1,7 @@
-" 1.2 (created: 2008/08/16 18:51:52)
-" Mappings
+"2.1 (created: 2009/05/21 13:13:06)
 
-" Options
-set guioptions=mb
-
-" Abbreviations
-
-source! ~/.vimperatorrc.local
+set guioptions=mBrb
+set runtimepath=/home/sebastian/.vimperator
+source! /home/sebastian/.vimperatorrc.local
 
 " vim: set ft=vimperator:
