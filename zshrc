@@ -45,12 +45,23 @@ export HOSTNAME="`hostname`"
 if (which most >&/dev/null); then
 	export PAGER="most -s"
 	export BROWSER="most -s"
+else
+	export PAGER="less"
+	export BROWSER="less"
 fi
 export LESS='-R -M --shift 5'
 (which lesspipe.sh >&/dev/null) && export LESSOPEN='|lesspipe.sh %s'
 
-export EDITOR="vim"
-export MUTT_EDITOR=vim
+if which vim >&/dev/null; then
+	export EDITOR="vim"
+	export MUTT_EDITOR="vim"
+elif which vi >&/dev/null; then
+	export EDITOR="vi"
+	export MUTT_EDITOR="vi"
+elif which nano >&/dev/null; then
+	export EDITOR="nano"
+	export MUTT_EDITOR="nano"
+fi
 
 unsetopt ALL_EXPORT
 
@@ -118,6 +129,7 @@ elif [ -f /etc/debian_version ]; then
 fi
 
 if [[ $HOSTNAME == "nas" ]]; then
+	export TZ="Europe/Brussels"
 	export LANG="en_US.utf8"
 	export CCACHE_PREFIX="distcc"
 	export DISTCC_HOSTS="192.168.5.111"
