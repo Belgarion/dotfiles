@@ -238,7 +238,7 @@ cab WQ wq
 runtime! macros/matchit.vim
 
 " {{{ Menu on F5
-source $VIMRUNTIME/menu.vim
+runtime! menu.vim
 set wildmenu
 set cpo-=<
 set wcm=<C-Z>
@@ -338,4 +338,12 @@ command! ToggleBG call ToggleBG()
 LightBG
 
 set guifont=Terminus\ 9
+" }}}
+" {{{ Host Specific
+if $HOSTNAME == "nas"
+	let Tlist_Auto_Open = 0
+	let loaded_matchparen = 1
+elseif $HOSTNAME == "polgara"
+	let loaded_matchparen = 1
+endif
 " }}}
