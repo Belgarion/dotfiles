@@ -134,3 +134,8 @@ if [[ $HOSTNAME == "nas" ]]; then
 	export CCACHE_PREFIX="distcc"
 	export DISTCC_HOSTS="192.168.5.111"
 fi
+
+if type keychain >&/dev/null; then
+	keychain ~/.ssh/id_rsa ~/.ssh/id_dsa
+	source ~/.keychain/${HOSTNAME}-sh
+fi
