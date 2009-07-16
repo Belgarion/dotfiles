@@ -33,6 +33,7 @@ ssh() {
 	elif [ $STY ]; then screen-title "$NAME";
 	fi
 }
+alias ssh-x='ssh -c arcfour,blowfish-cbc -XC'
 
 
 if [[ $UNAMES == "FreeBSD" ]]; then
