@@ -35,6 +35,8 @@ __screen_host_default() {
 
 	screen_cmd bindkey -k k1 prev
 	screen_cmd bindkey -k k2 next
+	screen_cmd bindkey "OP" prev
+	screen_cmd bindkey "OQ" next
 }
 __screen_host_Belgarion() {
 	# Set the escape to ^qq

@@ -1,7 +1,13 @@
 export UNAMES=`uname -s`
-[ -f ~/.bash_os-based ] && source ~/.bash_os-based
 
-[ -f ~/.zsh/options ] && source ~/.zsh/options
+fsource() {
+	local file=$1
+	[ -f $file ] && source $file
+}
+
+fsource ~/.bash_os-based
+
+fsource ~/.zsh/options
 
 # Autoload zsh modules when they are referenced
 zmodload -a -i zsh/stat stat
@@ -72,9 +78,9 @@ if [ -z "$chroot" ] && [ -r /etc/chroot ]; then
 fi
 
 alias man='LC_ALL=C LANG=C man'
-[ -f ~/.aliases ] && source ~/.aliases
-[ -f ~/.zsh/git ] && source ~/.zsh/git
-[ -f ~/.zsh/prompt ] && source ~/.zsh/prompt
+fsource ~/.aliases
+fsource ~/.zsh/git
+fsource ~/.zsh/prompt
 
 fpath=(~/.zsh/completion $fpath)
 
@@ -91,7 +97,7 @@ else
 	mailpath[$#mailpath+1]="$MAIL?You have new mail."
 fi
 
-[ -f ~/.zsh/bindkey ] && source ~/.zsh/bindkey
+fsource ~/.zsh/bindkey
 
 ### VARIABLES
 export CONCURRENCY_LEVEL=3
@@ -113,13 +119,13 @@ fi
 stty -ixon # disable ^s ^x flow control
 
 # Completion styles
-[ -f ~/.zsh/zstyle ] && source ~/.zsh/zstyle
+fsource ~/.zsh/zstyle
 
 # Local settings
-[ -f ~/.zsh/local ] && source ~/.zsh/local
+fsource ~/.zsh/local
 
 # Screen settings
-[ -f ~/.screenconf.sh ] && source ~/.screenconf.sh
+fsource ~/.screenconf.sh
 
 # ccache
 if [ -f /etc/gentoo-release ]; then
@@ -133,4 +139,9 @@ if [[ $HOSTNAME == "nas" ]]; then
 	export LANG="en_US.utf8"
 	export CCACHE_PREFIX="distcc"
 	export DISTCC_HOSTS="192.168.5.111"
+fi
+
+if (type keychain >&/dev/null) then
+	keychain ~/.ssh/id_rsa ~/.ssh/id_dsa
+	fsource ~/.keychain/${HOSTNAME}-sh
 fi

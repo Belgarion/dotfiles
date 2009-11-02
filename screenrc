@@ -6,6 +6,7 @@ defscrollback 1000
 silencewait 15
 pow_detach_msg "Screen session of \$LOGNAME \$:cr:\$:nl:ended."
 altscreen on
+defbce on
 term screen-256color
 utf8 on
 defutf8 on

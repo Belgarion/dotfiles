@@ -3,3 +3,8 @@
 *.[oa]
 *~
 moc_*
+*.py[co]
+*.vcproj.*.user
+*.ncb
+*.aps
+*.suo

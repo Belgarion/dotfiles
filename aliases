@@ -46,8 +46,8 @@ else
 			local free=0
 			local IFS=$'\n'
 			
-			df -h -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs -x devpts $@
-			for i in `df -P -k -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs -x devpts $@ | sed '1d'`
+			df -h -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs -x devpts $@ 
+			for i in `df -P -k -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs -x devpts $@ | grep -v "ftp://" | sed '1d'`
 			do 
 				val=$[`echo -n $i|awk '{print $2}'`]
 				total=$[$total+$val]

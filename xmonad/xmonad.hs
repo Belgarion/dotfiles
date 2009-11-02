@@ -125,15 +125,14 @@ main = do
 startup = do
     spawn "xset -b b off" -- disable bell
     spawn "xset m 9/8 10" --mouse acceleration
+    spawn "xset r rate 200 25" -- keyboard repeat
     --spawn "xmodmap ~/.Xmodmap" -- Xmodmap
     spawn "xrdb -merge ~/.Xdefaults"
     spawn "nvidia-settings -a InitialPixmapPlacement=2"
-    spawn "kdeinit"
-    spawn "azureus"
     spawn "pidgin"
     spawn "akregator"
     spawn (myHome ++ "/C++/irssi-notifier/daemon >&/dev/null") -- irssi notification dameon
-    spawn "korgac --miniicon korganizer"
+    spawn "korgac -icon korgac"
     spawn (myHome ++ "/bin/start_gnome-screensaver")
     spawn "gnome-screensaver-command --lock"
 
@@ -226,7 +225,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((0, 0x1008ff16), spawn "mpc2 prev")                   -- XF86AudioPrev
     , ((0, 0x1008ff14), spawn "mpc2 toggle")                 -- XF86AudioPlay
 
-    , ((modMask .|. controlMask, xK_q), io (exitWith ExitSuccess)) -- quit xmonad
+    , ((modMask .|. shiftMask .|. controlMask, xK_q), io (exitWith ExitSuccess)) -- quit xmonad
     , ((modMask .|. shiftMask .|. controlMask, xK_r), restart_xmonad) -- restart xmonad
     , ((modMask .|. controlMask, xK_r), catchIO restart_dzen) -- restart dzen
     --, ((modMask .|. controlMask, xK_r), spawn "killall conky dzen2 stalonetray" >> restart "xmonad" True) -- restart xmonad
