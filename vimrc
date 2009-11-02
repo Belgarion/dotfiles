@@ -72,7 +72,7 @@ map! <M-Esc>[65~ <S-MouseUp>
 " }}}
 " }}}
 
-set history=10
+set history=40
 
 syntax on
 set number
@@ -96,7 +96,6 @@ set incsearch
 set hlsearch
 set backspace=indent,eol,start
 set cinwords=if,else,while,do,for,switch,case
-set scrolloff=3
 set fileformat=unix
 set fileformats=unix
 set autoindent
@@ -107,6 +106,7 @@ set undolevels=1000
 set visualbell
 set guipty
 set foldmethod=marker
+set foldcolumn=2
 set listchars=tab:>-,extends:>,precedes:<,trail:-,nbsp:%,eol:$
 set splitright
 set splitbelow
@@ -118,7 +118,7 @@ set matchpairs+=<:>
 
 function! VarExists(var, val)
 	if exists(a:var) | return a:val | else | return '' | endif
-endfunction  
+endfunction
 
 " {{{ Statusline
 "set statusline=%t(%2.3n)%m%r%{VarExists('b:gzflag','\ [GZ]')}%h%w\ %([%{&ff}]%)%(:%y%)%(:[%{&fenc}]%)\ %=[%1.7l,%1.7c]\ \ [%p%%]
@@ -255,6 +255,24 @@ iab xstamp <C-R>=strftime("%a %Y-%m-%d %H:%M:%S (%z)")
 " Insert last modified header
 iab lastmod Last Modified: <C-R>=strftime("%a %Y-%m-%d %H:%M:%S (%z)")<Esc>
 
+" Use ack instead of grep
+if executable("ack")
+	let grepprg = "ack "
+endif
+
+" Define mapleader
+let mapleader = ","
+
+" Save info about files
+set viminfo='100
+
+" Save session info
+set sessionoptions=blank,buffers,curdir,folds,help,resize,tabpages,winsize,localoptions
+
+" Completion
+" Map C-Space to omnicomplete
+inoremap <Nul> <C-x><C-o>
+
 " {{{ Taglist
 let Tlist_Auto_Open = 1
 let Tlist_Exit_OnlyWindow = 1
@@ -301,6 +319,7 @@ colorscheme zenburn
 set background=dark
 hi Normal ctermbg=black
 hi LineNr ctermbg=black guibg=#3f3f3f
+hi Pmenu ctermbg=236
 
 let g:bg = 0
 
