@@ -141,7 +141,7 @@ if [[ $HOSTNAME == "nas" ]]; then
 	export DISTCC_HOSTS="192.168.5.111"
 fi
 
-if (type keychain >&/dev/null) then
+if type keychain >&/dev/null; then
 	keychain ~/.ssh/id_rsa ~/.ssh/id_dsa
 	fsource ~/.keychain/${HOSTNAME}-sh
 fi

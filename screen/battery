@@ -1,0 +1,17 @@
+#!/bin/sh
+
+while true; do
+	if type acpi >&/dev/null && [ ! "x`acpi -b`" = "x" ]; then
+		ac=''
+		acpi -a|grep "on-line" >&/dev/null  && ac='AC '
+		percent=`acpi -b|awk -F', ' 'NR==1 { print $2 }'`
+		case $percent in
+			100%) col="\005{g}";;
+			[56789]?%) col="\005{g}";;
+			[1234]?%) col="\005{y}";;
+			*) col="\005{r}";;
+		esac
+		echo -e "[ \005{g}$ac$col$percent \005{g}]"
+	fi
+	sleep 60
+done

@@ -33,6 +33,7 @@ ssh() {
 	elif [ $STY ]; then screen-title "$NAME";
 	fi
 }
+alias ssh-x='ssh -c arcfour,blowfish-cbc -XC'
 
 
 if [[ $UNAMES == "FreeBSD" ]]; then
@@ -240,6 +241,10 @@ eview() {
 }
 #End Gentoo specific
 
+
+# Travelmate 800
+ledon() { echo "Setting mail led light on"; echo 1 >| /proc/driver/acerhk/led; }
+ledoff() { echo "Setting mail led light off"; echo 0 >| /proc/driver/acerhk/led; }
 
 
 ##################################################################################

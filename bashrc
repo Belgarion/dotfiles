@@ -98,3 +98,8 @@ if [ -f /etc/profile.d/bash-completion ]; then
 elif [ -f /usr/local/etc/bash_completion ]; then
 	. /usr/local/etc/bash_completion
 fi
+
+if type keychain >&/dev/null; then
+	keychain ~/.ssh/id_rsa ~/.ssh/id_dsa
+	source ~/.keychain/${HOSTNAME}-sh
+fi

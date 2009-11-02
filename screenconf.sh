@@ -6,7 +6,8 @@ __screen_config() {
 	host=${HOSTNAME%%.*}
 
 	hs=$(echo -ne "[%n: %t] %h")
-	caption='%{= .G}[ %{G}%H %{g}][%= %{= .w}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
+
+	caption='%{= .G}[ %{G}%H %{g}][%= %{= .w}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}]%1`[%{B} %d/%m %{W}%c %{g}]'
 
 	hostfunc=__screen_host_${HOSTNAME//./_}
 	if [ $ZSH_VERSION ]; then
