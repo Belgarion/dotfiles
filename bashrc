@@ -28,12 +28,12 @@ if [ -z "$chroot" ] && [ -r /etc/gentoo_chroot ]; then
     chroot=$(cat /etc/gentoo_chroot)
 fi
 
-if [[ `hostname` == "Belgarion" ]]; then
+if [[ ${EUID} == 0 ]]; then
+	USERCOLOR="\e[1;31m"
+elif [[ `hostname` == "Belgarion" ]]; then
 	USERCOLOR="\e[1;36m"
 elif [[ "${UNAMES%_*}" == "CYGWIN" ]]; then
 	USERCOLOR="\e[0;32m"
-elif [[ ${EUID} == 0 ]]; then
-	USERCOLOR="\e[1;31m"
 else
 	USERCOLOR="\e[1;33m"
 fi
