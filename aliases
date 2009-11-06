@@ -294,3 +294,5 @@ if [ ! $ZSH_VERSION ]; then
 		printf "${CWD%/}"
 	}
 fi
+
+alias kismet='TERM=rxvt kismet'

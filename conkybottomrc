@@ -8,5 +8,5 @@ mpd_port 6600
 mpd_password mpdpassword
 
 TEXT
-^fg(#ffffff)^i(.dzen/mpd.xbm) ^fg(#aaaaaa)$mpd_smart ^fg():: ^fg(#aaaaaa)$mpd_elapsed^fg()/^fg(#aaaaaa)$mpd_length ^fg():: repeat:^fg(#aaaaaa)$mpd_repeat ^fg():: shuffle:^fg(#aaaaaa)$mpd_random ^fg():: volume:^fg(#aaaaaa)$mpd_vol
+^fg(\#ffffff)^i(.dzen/mpd.xbm) ^fg(\#aaaaaa)$mpd_smart ^fg():: ^fg(\#aaaaaa)$mpd_elapsed^fg()/^fg(\#aaaaaa)$mpd_length ^fg():: repeat:^fg(\#aaaaaa)$mpd_repeat ^fg():: shuffle:^fg(\#aaaaaa)$mpd_random ^fg():: volume:^fg(\#aaaaaa)$mpd_vol
 

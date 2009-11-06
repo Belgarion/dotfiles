@@ -139,3 +139,6 @@ if type keychain >&/dev/null; then
 	keychain ~/.ssh/id_rsa ~/.ssh/id_dsa
 	source ~/.keychain/${HOSTNAME}-sh
 fi
+
+export SDL_AUDIODRIVER="pulse"
+
