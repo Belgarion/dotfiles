@@ -18,7 +18,7 @@ tint_level 0
 transparent false
 vertical false
 window_layer normal
-window_type dock
+window_type normal
 withdrawn false
 xsync false
 

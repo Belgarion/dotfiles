@@ -31,6 +31,11 @@ import System.Exit
 import System.IO
 import System.Directory
 import System.Environment
+
+import System.Posix.IO
+import System.Posix.Process
+import System.Posix.Types
+
 import Graphics.X11
 import Graphics.X11.Xinerama
  
@@ -86,10 +91,10 @@ main = do
     let myWidth = read (show (widthOfScreen scr)) :: Int
     let myHeight = read (show (heightOfScreen scr)) :: Int
 
-    let myStatusBar = "dzen2 -x '0' -y '0' -h '16' -w " ++ show (myWidth - 580) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e ''"
-    let myTopBar = "conky -c ~/.conkytoprc | dzen2 -x " ++ show (myWidth - 580) ++ " -y '0' -h '16' -w '580' -ta 'r' -bg '" ++ myNormalBGColor  ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e ''"
-    let myBottomBar = "conky -c ~/.conkybottomrc | dzen2 -x '0' -y " ++ show (myHeight - 16) ++ " -h '16' -w " ++ show (myWidth-128) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn '" ++ myFont ++ "' -e ''"
-    din <- spawnPipe myStatusBar
+    let myStatusBar = "dzen2 -x '0' -y '0' -h '16' -w " ++ show (myWidth - 580) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e 'onstart=lower'"
+    let myTopBar = "conky -c ~/.conkytoprc | dzen2 -x " ++ show (myWidth - 580) ++ " -y '0' -h '16' -w '580' -ta 'r' -bg '" ++ myNormalBGColor  ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e 'onstart=lower'"
+    let myBottomBar = "conky -c ~/.conkybottomrc | dzen2 -x '0' -y " ++ show (myHeight - 16) ++ " -h '16' -w " ++ show (myWidth-128) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn '" ++ myFont ++ "' -e 'onstart=lower'"
+    din  <- spawnPipe myStatusBar
     din2 <- spawnPipe myTopBar
     din3 <- spawnPipe myBottomBar
 
@@ -152,8 +157,8 @@ restart_dzen = do
     let myWidth = read (show (widthOfScreen scr)) :: Int
     let myHeight = read (show (heightOfScreen scr)) :: Int
 
-    let myTopBar = "conky -c ~/.conkytoprc | dzen2 -x " ++ show (myWidth - 580) ++ " -y '0' -h '16' -w '580' -ta 'r' -bg '" ++ myNormalBGColor  ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed'"
-    let myBottomBar = "conky -c ~/.conkybottomrc | dzen2 -x '0' -y " ++ show (myHeight - 16) ++ " -h '16' -w " ++ show (myWidth-128) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn '" ++ myFont ++ "'"
+    let myTopBar = "conky -c ~/.conkytoprc | dzen2 -x " ++ show (myWidth - 580) ++ " -y '0' -h '16' -w '580' -ta 'r' -bg '" ++ myNormalBGColor  ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e 'onstart=lower'"
+    let myBottomBar = "conky -c ~/.conkybottomrc | dzen2 -x '0' -y " ++ show (myHeight - 16) ++ " -h '16' -w " ++ show (myWidth-128) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn '" ++ myFont ++ "' -e 'onstart=lower'"
     spawn myTopBar
     spawn myBottomBar
 
@@ -163,7 +168,7 @@ restart_dzen = do
 --    { args = ["-x", "0", "-y", show (myHeight - 16), "-h", "16", "-w", show (myWidth), "-ta", "r", "-expand", "l", "-bg", "#222222", "-fg", "#0077cc", "-fn", myFont] }
  
 -- Layout options:
-myLayout = avoidStruts $ smartBorders $ onWorkspace "1:term" (hintedTile Wide ||| noBorders Full) $ onWorkspaces ["2:www","3:rss"] (noBorders Full) $ onWorkspace "4:im" (noBorders $ HintedTile nmaster delta (4/5) TopLeft Tall) $ (hintedTile Tall ||| hintedTile Wide ||| (noBorders Full) ||| (ThreeCol 1 (3/100) (1/2)) ||| ResizableTall 1 (3/100) (1/2) []) 
+myLayout = avoidStruts $ smartBorders $ onWorkspace "1:term" (hintedTile Wide ||| noBorders Full) $ onWorkspaces ["2:www","3:rss"] (noBorders Full) $ onWorkspace "4:im" (noBorders $ HintedTile nmaster delta (4/5) TopLeft Tall) $ (hintedTile Tall ||| hintedTile Wide ||| (noBorders Full) ||| (ThreeCol 1 (3/100) (1/2)) ||| ResizableTall 1 (3/100) (1/2) [])
     where
     hintedTile = HintedTile nmaster delta ratio TopLeft
     nmaster = 1
@@ -194,6 +199,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask,                 xK_Print ), spawn "scrot desk_%Y-%m-%d.png -d 1") -- take a screenshot
     , ((modMask .|. controlMask, xK_x     ), kill) -- close focused window
     , ((modMask .|. shiftMask,   xK_b     ), withFocused toggleBorder)
+    , ((modMask .|. shiftMask,   xK_s     ), sendMessage ToggleStruts)
     , ((modMask,                 xK_space ), sendMessage NextLayout) -- rotate through the available layout algorithms
     , ((modMask .|. shiftMask,   xK_f     ), setLayout $ XMonad.layoutHook conf) -- reset the layouts on the current workspace to default
     , ((modMask,                 xK_n     ), refresh) -- resize viewed windows to the correct size

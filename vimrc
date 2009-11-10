@@ -205,6 +205,9 @@ nmap <F9> :set invlist <CR>
 " Toggle taglist
 nmap <F10> :TlistToggle <CR>
 
+" Toggle NERDTree
+nmap <F8> :NERDTreeToggle <CR>
+
 " Disable 'Replace mode'
 imap <Ins> <Esc>i
 

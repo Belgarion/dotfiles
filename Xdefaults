@@ -85,7 +85,7 @@ XTerm*color7:	        #D1D1D1
 XTerm*color15:	        #FFFFFF
 
 urxvt*colorBD:		lightyellow
-urxvt*colorUL:		yellow   
+urxvt*colorUL:		yellow
 
 !colors
 !black
