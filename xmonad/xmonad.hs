@@ -11,6 +11,7 @@
 import XMonad hiding (Tall)
 import XMonad.Actions.CycleWS
 import XMonad.Actions.NoBorders
+import XMonad.Actions.SpawnOn
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.UrgencyHook
@@ -98,6 +99,8 @@ main = do
     din2 <- spawnPipe myTopBar
     din3 <- spawnPipe myBottomBar
 
+    sp <- mkSpawner
+
     spawn ("stalonetray -i 16 --max-width 128 --geometry 128x16-0-0 -bg '" ++ myNormalBGColor ++ "'") -- tray
     spawn ("xsetroot -solid '" ++ myNormalBGColor ++ "'") -- set background color
     spawn "numlockx on" -- activate numlock
@@ -116,11 +119,11 @@ main = do
        , focusedBorderColor = myFocusedBorderColor
        , terminal = myTerminal
        , layoutHook = windowNavigation myLayout
-       , manageHook = myManageHook <+> manageDocks
-       , workspaces = ["1:term", "2:www", "3:rss", "4:im"] ++ map show [5..9 ::Int]
+       , manageHook = manageSpawn sp <+> myManageHook <+> manageDocks
+       , workspaces = ["1:term", "2:www", "3:rss", "4:im"] ++ map show [5..18 ::Int]
        , numlockMask = mod2Mask
        , modMask = mod1Mask
-       , keys = myKeys
+       , keys = myKeys sp
        , mouseBindings = myMouseBindings
        , borderWidth = 1
        , logHook = dynamicLogWithPP $ myLogHook din
@@ -191,10 +194,10 @@ myXPConfig = defaultXPConfig
     }
  
 -- Key bindings:
-myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
+myKeys sp conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask,   xK_Return), spawn $ XMonad.terminal conf)
     , ((mod4Mask,                xK_w     ), spawn "nitrogen --sort=alpha ~/Wallpapers")
-    , ((mod4Mask,                xK_p     ), shellPrompt myXPConfig)
+    , ((mod4Mask,                xK_p     ), shellPromptHere sp myXPConfig)
     , ((mod4Mask,                xK_l     ), spawn "gnome-screensaver-command --lock")
     , ((modMask,                 xK_Print ), spawn "scrot desk_%Y-%m-%d.png -d 1") -- take a screenshot
     , ((modMask .|. controlMask, xK_x     ), kill) -- close focused window
@@ -240,6 +243,11 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((m .|. modMask, k), windows $ f i)
     | (i, k) <- zip (XMonad.workspaces conf) [xK_F1 .. xK_F9] -- mod-[F1..F9], Switch to workspace N
     , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)] -- mod-shift-[F1..F9], Move client to workspace N
+    ]
+    ++
+    [ ((m .|. mod4Mask, k), windows $ f i)
+    | (i, k) <- zip (drop 9 $ XMonad.workspaces conf) [xK_F1 .. xK_F9] -- mod4-[F1..F9], Switch to workspace N
+    , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)] -- mod4-shift-[F1..F9], Move client to workspace N
     ]
     ++
     [ ((m .|. mod4Mask, key), screenWorkspace sc >>= flip whenJust (windows . f))
