@@ -41,20 +41,31 @@ addToPath "^" "/usr/bin"
 addToPath "^" "/usr/local/sbin"
 addToPath "^" "/usr/local/bin"
 addToPath "$" "/opt/vmware/server/lib/bin"
+addToPath "^" "$HOME/SDK/android-sdk-linux/tools/"
 addToPath "^" "$HOME/bin"
 
 export LANG='sv_SE.UTF-8'
 export TZ="Europe/Stockholm"
 export HOSTNAME="`hostname`"
 
-(which vimmanpager >&/dev/null) && export MANPAGER="vimmanpager"
-if (which most >&/dev/null); then
+if which vimmanpager >&/dev/null; then
+	export MANPAGER="vimmanpager"
+elif which vim >&/dev/null; then
+	export MANPAGER="/bin/sh -c \"unset PAGER;col -b -x | \
+	  vim -R -c 'set ft=man nomod nolist' -c 'map q :q<CR>' \
+	  -c 'map <SPACE> <C-D>' -c 'map b <C-U>' \
+	  -c 'nmap K :Man <C-R>=expand(\\\"<cword>\\\")<CR><CR>' -\""
+fi
+
+if which most >&/dev/null; then
 	export PAGER="most -s"
 	export BROWSER="most -s"
 else
 	export PAGER="less"
 	export BROWSER="less"
 fi
+
+fsource ~/.sh/less_colors
 export LESS='-R -M --shift 5'
 (which lesspipe.sh >&/dev/null) && export LESSOPEN='|lesspipe.sh %s'
 
@@ -145,3 +156,5 @@ if type keychain >&/dev/null; then
 	keychain ~/.ssh/id_rsa ~/.ssh/id_dsa
 	fsource ~/.keychain/${HOSTNAME}-sh
 fi
+
+type fortune >&/dev/null && fortune
