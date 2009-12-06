@@ -38,6 +38,16 @@ def update_keydict(*kwargs):
 def bufferbar_item_cb(*kwargs):
 	global keydict
 
+	window = kwargs[2]
+
+	infolist = weechat.infolist_get('window', '', '')
+	curBuffer = None
+	while weechat.infolist_next(infolist):
+		if weechat.infolist_pointer(infolist, 'pointer') == window:
+			curBuffer = weechat.infolist_pointer(infolist, 'buffer')
+	weechat.infolist_free(infolist)
+
+
 	chars = 0
 	width = -1
 
@@ -87,7 +97,7 @@ def bufferbar_item_cb(*kwargs):
 			numberstr = keydict[number] + " "
 
 		colorFg = weechat.config_get_plugin("color_default")
-		if weechat.infolist_integer(buffers,'current_buffer'):
+		if weechat.infolist_pointer(buffers, 'pointer') == curBuffer:
 			colorFg = weechat.config_get_plugin("color_current")
 		elif number in activeBuffers:
 			colorFg = weechat.config_get_plugin("color_hotlist_" + hotlistLevel[activeBuffers[number]])

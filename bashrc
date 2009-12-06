@@ -63,11 +63,15 @@ esac
 
 [ -f ~/.bash_os-based ] && . ~/.bash_os-based
 
+
 (which vimmanpager >&/dev/null) && export MANPAGER="vimmanpager"
 if (which most >&/dev/null); then
 	export PAGER="most -s"
 	export BROWSER="most -s"
 fi
+[ -f ~/.sh/less_colors ] && . ~/.sh/less_colors 
+export LESS='-R -M --shift 5'
+(which lesspipe.sh >&/dev/null) && export LESSOPEN='|lesspipe.sh %s'
 
 export CONCURRENCY_LEVEL=3
 export EDITOR="vim"

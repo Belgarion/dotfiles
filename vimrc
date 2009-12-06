@@ -84,21 +84,18 @@ set showcmd
 set showmode
 set showtabline=1
 set autowrite
-set ai
+set autoindent
 set ruler
 set title
 set ttyfast
 set formatoptions=tcqor
 set scrolloff=3
-set autowrite
-set ignorecase
 set incsearch
 set hlsearch
 set backspace=indent,eol,start
 set cinwords=if,else,while,do,for,switch,case
 set fileformat=unix
 set fileformats=unix
-set autoindent
 set smartcase
 set display+=uhex
 set confirm
@@ -110,7 +107,6 @@ set foldcolumn=2
 set listchars=tab:>-,extends:>,precedes:<,trail:-,nbsp:%,eol:$
 set splitright
 set splitbelow
-set title
 set shellslash
 
 " Include angle brackets in matching.
@@ -296,6 +292,7 @@ if has("autocmd")
 
 	autocmd BufNewFile,BufRead *.cpp,*.c hi! link Include PreProc
 	autocmd BufNewFile,BufRead *.cpp,*.c,*.py match OverLength /\%81v.*/
+	autocmd BufNewFile,BufRead * match OverLength /\%81v.*/
 	autocmd BufNewFile,BufRead *.hs set fdm=marker sw=4 sts=4 ts=4 et ai
 	au BufNewFile,BufRead /tmp/mutt* call MuttCfg()
 	autocmd BufNewFile,BufRead /etc/apache2/* set filetype=apache
@@ -324,7 +321,7 @@ set background=dark
 hi Normal ctermbg=black
 hi LineNr ctermbg=black guibg=#3f3f3f
 hi Pmenu ctermbg=236
-highlight OverLength ctermbg=black guibg=#FFD9D9
+highlight OverLength ctermbg=black guibg=black
 
 let g:bg = 0
 

@@ -273,6 +273,7 @@ myManageHook = composeAll . concat $
     , [className =? "Firefox-bin" --> doF (W.shift "2:www")]
     , [className =? "Akregator" --> doF (W.shift "3:rss")]
     , [className =? "Pidgin" --> doF (W.shift "4:im")]
+    , [className =? "Eclipse" --> doF (W.shift "10")]
     ]
     where
     myFloats = ["ekiga", "Gimp", "gimp", "MPlayer", "Nitrogen", "Transmission-gtk", "Xmessage", "xmms"]

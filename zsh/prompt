@@ -106,4 +106,5 @@ $PR_BLACK└%b$PR_LIGHT_CYAN──$PR_CYAN─>$PR_NO_COLOR "
 
 }
 
+zmodload zsh/terminfo
 setprompt
