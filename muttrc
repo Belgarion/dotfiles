@@ -1,0 +1,7 @@
+source ~/.mutt/settings
+source ~/.mutt/keybindings
+source ~/.mutt/colors
+source ~/.mutt/hooks
+source ~/.mutt/aliases
+source ~/.mutt/mailboxes
+source ~/.mutt/private

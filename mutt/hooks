@@ -1,0 +1,19 @@
+# vim:ft=muttrc
+
+# Set the defaults for folders:
+folder-hook .    set timeout=30
+folder-hook .    set sort=threads
+folder-hook .    set sort_aux=date-sent
+# When I'm in the main index, check more often :)
+folder-hook "!"  set timeout=5
+# Mail in my inbox is more date than thread sensitive...
+folder-hook "!"  set sort=date-received
+folder-hook "sent"  set sort=reverse-date
+
+save-hook .* =%B
+folder-hook .    save-hook .* =%B
+folder-hook .    unmy_hdr *
+folder-hook .    my_hdr X-Editor: Vim http://www.vim.org/
+
+folder-hook . 'set folder="~/.mail" record=+Sent postponed=+Drafts'
+folder-hook . 'set read_inc=300'

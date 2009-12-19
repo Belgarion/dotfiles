@@ -1,0 +1,34 @@
+# vim:ft=muttrc
+
+#toggle headers with h key
+bind pager h display-toggle-weed
+
+bind pager <up> previous-line
+bind pager <down> next-line
+bind pager <left> exit
+bind pager <right> view-attachments
+bind attach <left> exit
+bind attach <right> view-attach
+bind index <right> display-message
+macro index <left> "c?<tab>"
+bind browser <right> select-entry
+bind browser <left> exit
+
+bind index s save-message
+bind browser x check-new
+
+# simulate the old url menu
+macro index \cb |urlview\n 'call urlview to extract URLs out of a message'
+macro pager \cb |urlview\n 'call urlview to extract URLs out of a message'
+
+#run fetchmail by hitting key of G
+#macro index G "!fetchmail -a -m 'procmail -d %T'\r"
+#macro pager G "!fetchmail -a -m 'procmail -d %T'\r"
+macro index G "!fetchmail -a\r"
+macro pager G "!fetchmail -a\r"
+
+#use to edit .muttrc and then source it...no restart necessary
+macro generic ,sm ":source $HOME/.muttrc\r"
+
+macro index r <list-reply><reply>
+macro pager r <list-reply><reply>
