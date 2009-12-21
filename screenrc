@@ -22,7 +22,7 @@ termcapinfo xterm*|linux*|rxvt*|Eterm* OP
 termcapinfo xterm|rxvt hs@:cs=\E[%i%d;%dr:im=\E[4h:ei=\E[4l
 termcapinfo xterm|rxvt hs@:cs=\E[%i%p1%d;%p2%dr:im=\E[4h:ei=\E[4l
 termcapinfo xterm*|rxvt* Z0=\E[?3h:Z1=\E[?3l:is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l
-termcapinfo xterm* OL=100
+termcapinfo xterm* OL=1000
 termcapinfo xterm|rxvt 'VR=\E[?5h:VN=\E[?5l'
 termcapinfo xterm|rxvt 'k1=\E[11~:k2=\E[12~:k3=\E[13~:k4=\E[14~'
 termcapinfo xterm|rxvt 'kh=\EOH:kI=\E[2~:kD=\E[3~:kH=\EOF:kP=\E[5~:kN=\E[6~'
