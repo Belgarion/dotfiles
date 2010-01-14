@@ -199,7 +199,7 @@ myKeys sp conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((mod4Mask,                xK_w     ), spawn "nitrogen --sort=alpha ~/Wallpapers")
     , ((mod4Mask,                xK_p     ), shellPromptHere sp myXPConfig)
     , ((mod4Mask,                xK_l     ), spawn "gnome-screensaver-command --lock")
-    , ((modMask,                 xK_Print ), spawn "scrot desk_%Y-%m-%d.png -d 1") -- take a screenshot
+    , ((modMask,                 xK_Print ), spawn "scrot desk_%Y-%m-%d-%H%M%S_$wx$h.png -d 1 -e 'mv $f ~/screenshots/' ") -- take a screenshot
     , ((modMask .|. controlMask, xK_x     ), kill) -- close focused window
     , ((modMask .|. shiftMask,   xK_b     ), withFocused toggleBorder)
     , ((modMask .|. shiftMask,   xK_s     ), sendMessage ToggleStruts)

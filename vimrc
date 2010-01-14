@@ -57,7 +57,7 @@ if &term == "xterm-256color" || &term == "screen-256color"
 endif
 " }}}
 " {{{ Mouse
-set ttymouse=xterm
+set ttymouse=xterm2
 set mouse=a
 
 " Scrolling
@@ -291,14 +291,12 @@ if has("autocmd")
 	filetype plugin indent on
 
 	autocmd BufNewFile,BufRead *.cpp,*.c hi! link Include PreProc
-	autocmd BufNewFile,BufRead *.cpp,*.c,*.py match OverLength /\%81v.*/
-	autocmd BufNewFile,BufRead * match OverLength /\%81v.*/
 	autocmd BufNewFile,BufRead *.hs set fdm=marker sw=4 sts=4 ts=4 et ai
-	au BufNewFile,BufRead /tmp/mutt* call MuttCfg()
+	autocmd BufNewFile,BufRead /tmp/mutt* call MuttCfg()
 	autocmd BufNewFile,BufRead /etc/apache2/* set filetype=apache
 	autocmd BufNewFile,BufRead *.pd set filetype=html
-	au BufNewFile,BufRead modprobe.conf set syntax=modconf
-	au BufReadCmd *.jar,*.war,*.ear,*.sar,*.rar,*.xpi call zip#Browse(expand("<amatch>"))
+	autocmd BufNewFile,BufRead modprobe.conf set syntax=modconf
+	autocmd BufReadCmd *.jar,*.war,*.ear,*.sar,*.rar,*.xpi call zip#Browse(expand("<amatch>"))
 
 	" omnicomplete
 	autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
@@ -321,7 +319,13 @@ set background=dark
 hi Normal ctermbg=black
 hi LineNr ctermbg=black guibg=#3f3f3f
 hi Pmenu ctermbg=236
+hi Comment gui=none
+
 highlight OverLength ctermbg=black guibg=black
+autocmd BufNewFile,BufRead * syn match OverLength /\%>80v.\+/ containedin=ALL
+
+highlight ExtraWhitespace ctermbg=red guibg=red
+autocmd BufNewFile,BufRead * syn match ExtraWhitespace /\s\+$/ containedin=ALL
 
 let g:bg = 0
 
@@ -358,7 +362,11 @@ command! ToggleBG call ToggleBG()
 
 LightBG
 
-set guifont=Terminus\ 9
+if osys=="windows"
+	set guifont=ter-112n:h9
+else
+	set guifont=Terminus\ 9
+endif
 " }}}
 " {{{ Host Specific
 if $HOSTNAME == "nas"

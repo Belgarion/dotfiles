@@ -44,6 +44,8 @@ setopt inc_append_history
 setopt no_clobber
 # Try to correct the spelling of all arguments in a line.
 setopt correct_all
+# Use dvorak for correction
+setopt dvorak
 # Turns off C-S/C-Q flow control
 setopt no_flow_control
 # Print a warning message if a mail file has been accessed since the shell last checked.

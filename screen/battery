@@ -12,6 +12,8 @@ while true; do
 			*) col="\005{r}";;
 		esac
 		echo -e "[ \005{g}$ac$col$percent \005{g}]"
+	else
+		exit
 	fi
 	sleep 60
 done
