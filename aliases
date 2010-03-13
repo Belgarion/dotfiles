@@ -2,9 +2,9 @@
 
 UNAMES=`uname -s`
 
-konsole-title() { 
+konsole-title() {
 	if [ $KONSOLE_DCOP_SESSION ]; then
-		if [[ "$@" == "" ]]; then 
+		if [[ "$@" == "" ]]; then
 			dcop $KONSOLE_DCOP_SESSION sessionName
 		else
 			dcop $KONSOLE_DCOP_SESSION renameSession "$@"
@@ -46,10 +46,12 @@ else
 			local used=0
 			local free=0
 			local IFS=$'\n'
-			
-			df -h -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs -x devpts $@ 
-			for i in `df -P -k -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs -x devpts $@ | grep -v "ftp://" | sed '1d'`
-			do 
+
+			df -h -x none -x tmpfs -x usbfs -x aufs -x squashfs \
+				-x rootfs -x devpts $@
+			for i in `df -P -k -x none -x tmpfs -x usbfs -x aufs -x squashfs \
+				-x rootfs -x devpts $@ | grep -v "ftp://" | sed '1d'`
+			do
 				val=$[`echo -n $i|awk '{print $2}'`]
 				total=$[$total+$val]
 				val=$[`echo -n $i|awk '{print $3}'`]
@@ -58,10 +60,121 @@ else
 				free=$[$free+$val]
 			done
 			echo -------------------------------------------------------
-			echo "*                     `calc -p "round($total/1024/1024)"`G  `calc -p "round($used/1024/1024)"`G  `calc -p "round($free/1024/1024)"`G  `calc -p "round((100/$total)/(100/$used)*100)"`%   Total"
-		else 
+			totalPostfix="K"
+			totalDecimals=0
+			usedPostfix="K"
+			usedDecimals=0
+			freePostfix="K"
+			freeDecimals=0
+			while [[ $total -gt 1024 ]]; do
+				total=`dc <<< "5k $total 1024/p"`
+				case $totalPostfix in
+					K) totalPostfix="M";;
+					M) totalPostfix="G";;
+					G) totalPostfix="T";;
+					*) totalPostfix="*";;
+				esac
+				[[ $total -lt 10 ]] && totalDecimals=1
+			done
+			while [[ $used -gt 1024 ]]; do
+				used=`dc <<< "5k $used 1024/p"`
+				case $usedPostfix in
+					K) usedPostfix="M";;
+					M) usedPostfix="G";;
+					G) usedPostfix="T";;
+					*) usedPostfix="*";;
+				esac
+				[[ $used -lt 10 ]] && usedDecimals=1
+			done
+			while [[ $free -gt 1024 ]]; do
+				free=`dc <<< "5k $free 1024/p"`
+				case $freePostfix in
+					K) freePostfix="M";;
+					M) freePostfix="G";;
+					G) freePostfix="T";;
+					*) freePostfix="*";;
+				esac
+				[[ $free -lt 10 ]] && freeDecimals=1
+			done
+			printf "*                     "
+			printf "%3.*f%s  %3.*f%s  %3.*f%s  %2d%% Total\n" \
+				$totalDecimals $total $totalPostfix \
+				$usedDecimals $used $usedPostfix \
+				$freeDecimals $free $freePostfix \
+				`calc -p "round((100/$total)/(100/$used)*100)"`
+		else
 			echo "Install calc"
 			df -h -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs $@
+		fi
+	}
+
+	dfhl() {
+		# like dfh(), but only local filesystems
+		if (type calc &>/dev/null); then
+			local val=0
+			local total=0
+			local used=0
+			local free=0
+			local IFS=$'\n'
+
+			df -l -h -x none -x tmpfs -x usbfs -x aufs -x squashfs \
+				-x rootfs -x devpts $@
+			for i in `df -l -P -k -x none -x tmpfs -x usbfs -x aufs -x \
+				squashfs -x rootfs -x devpts $@ | grep -v "ftp://" | sed '1d'`
+			do
+				val=$[`echo -n $i|awk '{print $2}'`]
+				total=$[$total+$val]
+				val=$[`echo -n $i|awk '{print $3}'`]
+				used=$[$used+$val]
+				val=$[`echo -n $i|awk '{print $4}'`]
+				free=$[$free+$val]
+			done
+			echo -------------------------------------------------------
+			totalPostfix="K"
+			totalDecimals=0
+			usedPostfix="K"
+			usedDecimals=0
+			freePostfix="K"
+			freeDecimals=0
+			while [[ $total -gt 1024 ]]; do
+				total=`dc <<< "5k $total 1024/p"`
+				case $totalPostfix in
+					K) totalPostfix="M";;
+					M) totalPostfix="G";;
+					G) totalPostfix="T";;
+					*) totalPostfix="*";;
+				esac
+				[[ $total -lt 10 ]] && totalDecimals=1
+			done
+			while [[ $used -gt 1024 ]]; do
+				used=`dc <<< "5k $used 1024/p"`
+				case $usedPostfix in
+					K) usedPostfix="M";;
+					M) usedPostfix="G";;
+					G) usedPostfix="T";;
+					*) usedPostfix="*";;
+				esac
+				[[ $used -lt 10 ]] && usedDecimals=1
+			done
+			while [[ $free -gt 1024 ]]; do
+				free=`dc <<< "5k $free 1024/p"`
+				case $freePostfix in
+					K) freePostfix="M";;
+					M) freePostfix="G";;
+					G) freePostfix="T";;
+					*) freePostfix="*";;
+				esac
+				[[ $free -lt 10 ]] && freeDecimals=1
+			done
+			printf "*                     "
+			printf "%3.*f%s  %3.*f%s  %3.*f%s  %2d%% Total\n" \
+				$totalDecimals $total $totalPostfix \
+				$usedDecimals $used $usedPostfix \
+				$freeDecimals $free $freePostfix \
+				`calc -p "round((100/$total)/(100/$used)*100)"`
+		else
+			echo "Install calc"
+			df -l -h -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs $@
 		fi
 	}
 fi
@@ -120,7 +233,7 @@ if (type grc >&/dev/null); then
 fi
 # Color end
 
-upre() { 
+upre() {
 	echo -n "uptime: `uptime | sed 's/.*up \(.*\),.*user.*/\1/'` :: record: "
 	if [[ "$UNAMES" == "FreeBSD" ]]; then
 		uprecords -asm1 | gsed 's/|.*//g;s/\(->\|\s\)\s*1\s*//;;s/  //g' | gawk 'NR==3 {print $LN}'
@@ -232,7 +345,7 @@ alias ll.='ls -ld .*'
 alias esearch='esearch -S'
 edep() { for i in /var/db/pkg/*/*/*DEPEND; do grep -H "$1" $i; done; }
 pc(){ local i=0; while read; do ((i++)); done < <(printf "%s\n" /var/db/pkg/*/*/); echo "$i"; }
-pl(){ local i; for i in /var/db/pkg/*/*; do i="${i#/*/*/*/}"; echo "${i%-[0-9]*}"; done; } 
+pl(){ local i; for i in /var/db/pkg/*/*; do i="${i#/*/*/*/}"; echo "${i%-[0-9]*}"; done; }
 eview() {
 	FILE=$(equery which $1)
 	if [ -f "$FILE" ]; then
@@ -281,7 +394,7 @@ if [ ! $ZSH_VERSION ]; then
 			unset IFS
 		fi
 		eval "case \"$PWD\" in "$HOME"*) PWD=\${PWD:"${#HOME}"};CWD=\$TXTCOLOR\~;;/)CWD=\$SEPCOLOR/;esac"
-		test $(( $COLUMNS - ${#PWD} )) -lt ${CUTOFF} && { 
+		test $(( $COLUMNS - ${#PWD} )) -lt ${CUTOFF} && {
 			CWD=${TXTCOLOR}...
 			eval "PWD=\"\${PWD:$(( ${#PWD} - ( $COLUMNS - $CUTOFF ) ))}\""
 		}

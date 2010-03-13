@@ -7,7 +7,7 @@
 
 
 -- Based on And1's xmonad.hs
- 
+
 import XMonad hiding (Tall)
 import XMonad.Actions.CycleWS
 import XMonad.Actions.NoBorders
@@ -39,7 +39,7 @@ import System.Posix.Types
 
 import Graphics.X11
 import Graphics.X11.Xinerama
- 
+
 import qualified Data.Map as M
 import qualified System.IO.UTF8
 import qualified XMonad.Actions.FlexibleResize as Flex
@@ -59,7 +59,6 @@ myUrgentBGColor :: String
 mySeparatorColor :: String
 
 myFont :: String
-myHome :: String
 myTerminal :: String
 -- }}}
 -- Colour scheme {{{
@@ -80,12 +79,13 @@ mySeparatorColor = "#555555"
 myFont = "-misc-fixed"
 --myFont = "xft:DejaVu Sans:size=10"
 --}}}
-myHome = "/home/sebastian"
 myTerminal = "urxvt"
 -- }}}
 
 main :: IO ()
 main = do
+    home <- catch (getEnv "HOME") ( const $ return [])
+
     d <- catch (getEnv "DISPLAY") ( const $ return [])
     dpy <- openDisplay d
     let scr = defaultScreenOfDisplay dpy
@@ -110,11 +110,9 @@ main = do
     file <- doesFileExist "/tmp/xmonad_restart"
     if (file)
       then removeFile "/tmp/xmonad_restart"
-      else startup
+      else startup home
 
-    --xmonad $ myUrgencyHook $ defaultConfig
-    xmonad $ withUrgencyHook dzenUrgencyHook { args = ["-x", "0", "-y", show (myHeight - 16), "-h", "16", "-w", show (myWidth), "-ta", "r", "-expand", "l", "-bg", myNormalBGColor, "-fg", "#0077cc", "-fn", myFont] } $ defaultConfig	
- 
+    xmonad $ myUrgencyHook myHeight myWidth $ defaultConfig
        { normalBorderColor = myNormalBorderColor
        , focusedBorderColor = myFocusedBorderColor
        , terminal = myTerminal
@@ -126,22 +124,29 @@ main = do
        , keys = myKeys sp
        , mouseBindings = myMouseBindings
        , borderWidth = 1
-       , logHook = dynamicLogWithPP $ myLogHook din
+       , logHook = dynamicLogWithPP $ myLogHook din home
        , focusFollowsMouse = True
        }
 
-startup = do
+myUrgencyHook height width = withUrgencyHook dzenUrgencyHook
+    { args = ["-x", "0", "-y", show (height - 16), "-h", "16", "-w"
+    , show (width), "-ta", "r", "-expand", "l", "-bg", myNormalBGColor
+    , "-fg", "#0077cc", "-fn", myFont] }
+
+
+startup home = do
     spawn "xset -b b off" -- disable bell
-    spawn "xset m 9/8 10" --mouse acceleration
+    --spawn "xset m 9/8 10" --mouse acceleration
+    spawn "xset m 0 0" -- disable mouse acceleration
     spawn "xset r rate 200 25" -- keyboard repeat
     --spawn "xmodmap ~/.Xmodmap" -- Xmodmap
     spawn "xrdb -merge ~/.Xdefaults"
     spawn "nvidia-settings -a InitialPixmapPlacement=2"
     spawn "pidgin"
     spawn "akregator"
-    spawn (myHome ++ "/C++/irssi-notifier/daemon >&/dev/null") -- irssi notification dameon
+    spawn (home ++ "/C++/irssi-notifier/daemon >&/dev/null") -- irssi notification dameon
     spawn "korgac -icon korgac"
-    spawn (myHome ++ "/bin/start_gnome-screensaver")
+    spawn (home ++ "/bin/start_gnome-screensaver")
     spawn "gnome-screensaver-command --lock"
 
 restart_xmonad :: X ()
@@ -165,19 +170,18 @@ restart_dzen = do
     spawn myTopBar
     spawn myBottomBar
 
-
--- Urgency hint options:
---myUrgencyHook = withUrgencyHook dzenUrgencyHook
---    { args = ["-x", "0", "-y", show (myHeight - 16), "-h", "16", "-w", show (myWidth), "-ta", "r", "-expand", "l", "-bg", "#222222", "-fg", "#0077cc", "-fn", myFont] }
- 
 -- Layout options:
-myLayout = avoidStruts $ smartBorders $ onWorkspace "1:term" (hintedTile Wide ||| noBorders Full) $ onWorkspaces ["2:www","3:rss"] (noBorders Full) $ onWorkspace "4:im" (noBorders $ HintedTile nmaster delta (4/5) TopLeft Tall) $ (hintedTile Tall ||| hintedTile Wide ||| (noBorders Full) ||| (ThreeCol 1 (3/100) (1/2)) ||| ResizableTall 1 (3/100) (1/2) [])
+myLayout = avoidStruts $ smartBorders $
+    onWorkspace "1:term" (hintedTile Wide ||| noBorders Full) $
+    onWorkspaces ["2:www","3:rss"] (noBorders Full) $
+    onWorkspace "4:im" (noBorders $ HintedTile nmaster delta (4/5) TopLeft Tall) $
+    (hintedTile Tall ||| hintedTile Wide ||| (noBorders Full) ||| (ThreeCol 1 (3/100) (1/2)) ||| ResizableTall 1 (3/100) (1/2) [])
     where
     hintedTile = HintedTile nmaster delta ratio TopLeft
     nmaster = 1
     ratio = toRational (2/(1+sqrt(5)::Double))
     delta = 3/100
- 
+
 -- XPConfig options:
 myXPConfig :: XPConfig
 myXPConfig = defaultXPConfig
@@ -192,7 +196,7 @@ myXPConfig = defaultXPConfig
     , height = 16
     , historySize = 100
     }
- 
+
 -- Key bindings:
 myKeys sp conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask,   xK_Return), spawn $ XMonad.terminal conf)
@@ -254,7 +258,7 @@ myKeys sp conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     | (key, sc) <- zip [xK_q, xK_w, xK_e] [0..] -- win-{q,w,e}, Switch to physical/Xinerama screens 1, 2, or 3
     , (f, m) <- [(W.view, 0), (W.shift, shiftMask)] -- win-shift-{q,w,e}, Move client to screen 1, 2, or 3
     ]
- 
+
 -- Mouse bindings:
 myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask, button1), (\w -> focus w >> mouseMoveWindow w)) -- Set the window to floating mode and move by dragging
@@ -263,7 +267,7 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask, button4), (\_ -> prevWS)) -- Switch to previous workspace
     , ((modMask, button5), (\_ -> nextWS)) -- Switch to next workspace
     ]
- 
+
 -- Window rules:
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
@@ -279,24 +283,24 @@ myManageHook = composeAll . concat $
     myFloats = ["ekiga", "Gimp", "gimp", "MPlayer", "Nitrogen", "Transmission-gtk", "Xmessage", "xmms"]
     myOtherFloats = ["Downloads", "Iceweasel Preferences", "Save As...", "Compose: (no subject)", "Icedove Preferences", "Tag and File Name scan", "Preferences...", "Confirm...", "gmpc - Configuration", "gmpc - song info", "Save Playlist", "GQview Preferences", "Inkscape Preferences (Shift+Ctrl+P)", "Select file to open", "Select file to save to", "Warning", "Closing Project - K3b", "Open Files - K3b", "Options - K3b", "Close Nicotine-Plus?", "Nicotine Settings", "OpenOffice.org 2.0", "Open", "Options - OpenOffice.org - User Data", "File Properties", "Preference", "Plugins:", "Preferences", "Firefox - Återställ föregående session", "Firefox-inställningar", "StepMania - pop * candy -", "Custom Smiley Manager", "Insticksmoduler", "Systemlogg", "Volbar"]
     myIgnores = ["stalonetray", "trayer"]
- 
+
 -- dynamicLog pretty printer for dzen:
-myLogHook h = defaultPP
-    { ppCurrent = wrap ("^bg(#444444)^p(2)^fg(#00aaff)^i(" ++ myHome ++ "/.dzen/plus.xbm)^fg(#ffffff)") "^p(2)^fg()^bg()" . \wsId -> if (':' `elem` wsId) then drop 2 wsId else wsId
+myLogHook h home = defaultPP
+    { ppCurrent = wrap ("^bg(#444444)^p(2)^fg(#00aaff)^i(" ++ home ++ "/.dzen/plus.xbm)^fg(#ffffff)") "^p(2)^fg()^bg()" . \wsId -> if (':' `elem` wsId) then drop 2 wsId else wsId
     , ppVisible = wrap "^bg(#444444)^fg(#aaaaaa)^p(2)" "^p(2)^fg()^bg()"
-    , ppHidden = wrap ("^fg(#ffffff)^p(2)^i(" ++ myHome ++ "/.dzen/plus.xbm)^fg()") "^p(2)^fg()" . \wsId -> if (':' `elem` wsId) then drop 2 wsId else wsId
+    , ppHidden = wrap ("^fg(#ffffff)^p(2)^i(" ++ home ++ "/.dzen/plus.xbm)^fg()") "^p(2)^fg()" . \wsId -> if (':' `elem` wsId) then drop 2 wsId else wsId
     , ppHiddenNoWindows = id . \wsId -> if (':' `elem` wsId) then drop 2 wsId else wsId
     , ppSep = " ^fg(" ++ mySeparatorColor ++ ")::^fg() "
     , ppWsSep = " "
     , ppLayout = dzenColor "#ffffff" "" .
         (\x -> case x of
-        "Hinted Tall" -> "^i(" ++ myHome ++ "/.dzen/tall.xbm)"
-        "Hinted Wide" -> "^i(" ++ myHome ++ "/.dzen/mtall.xbm)"
-        "Hinted Full" -> "^i(" ++ myHome ++ "/.dzen/full.xbm)"
-        "Tall" -> "^i(" ++ myHome ++ "/.dzen/tall.xbm)"
-        "Wide" -> "^i(" ++ myHome ++ "/.dzen/mtall.xbm)"
-        "Full" -> "^i(" ++ myHome ++ "/.dzen/full.xbm)"
-        "ThreeCol" -> "^i(" ++ myHome ++ "/.dzen/threecol.xbm)"
+        "Hinted Tall" -> "^i(" ++ home ++ "/.dzen/tall.xbm)"
+        "Hinted Wide" -> "^i(" ++ home ++ "/.dzen/mtall.xbm)"
+        "Hinted Full" -> "^i(" ++ home ++ "/.dzen/full.xbm)"
+        "Tall" -> "^i(" ++ home ++ "/.dzen/tall.xbm)"
+        "Wide" -> "^i(" ++ home ++ "/.dzen/mtall.xbm)"
+        "Full" -> "^i(" ++ home ++ "/.dzen/full.xbm)"
+        "ThreeCol" -> "^i(" ++ home ++ "/.dzen/threecol.xbm)"
         _ -> ""
         )
     , ppTitle = dzenColor "#ffffff" "" . wrap "< " " >"
