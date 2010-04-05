@@ -3,7 +3,7 @@ out_to_console
 update_interval 1
 use_spacer none
 
-mpd_host polgara.home
+mpd_host localhost
 mpd_port 6600
 mpd_password mpdpassword
 
