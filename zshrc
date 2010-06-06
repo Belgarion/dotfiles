@@ -102,9 +102,9 @@ typeset -a mailpath
 for i in ~/.mail/lists/*(.); do
    mailpath[$#mailpath+1]="${i}?You have new mail in ${i:t}."
 done
-if [ ! $MAIL ]; then 
+if [ ! $MAIL ]; then
 	mailpath[$#mailpath+1]="/var/spool/mail/$USER?You have new mail."
-else 
+else
 	mailpath[$#mailpath+1]="$MAIL?You have new mail."
 fi
 

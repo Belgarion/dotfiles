@@ -193,7 +193,7 @@ nnoremap <F11> :tabprevious<CR>
 inoremap <F11> <Esc>:tabprevious<CR>
 " }}}
 " Paste with ctrl+v
-nmap <silent> <C-v> :set paste<CR>"*p:set nopaste<CR> 
+"nmap <silent> <C-v> :set paste<CR>"*p:set nopaste<CR> 
 
 " Toggle show line endings with $
 nmap <F9> :set invlist <CR>
@@ -364,8 +364,10 @@ LightBG
 
 if osys=="windows"
 	set guifont=ter-112n:h9
+	set printfont=ter-112n:h9
 else
 	set guifont=Terminus\ 9
+	set printfont=Terminus\ 9
 endif
 " }}}
 " {{{ Host Specific

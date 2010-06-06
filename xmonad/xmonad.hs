@@ -141,7 +141,7 @@ startup home = do
     spawn "xset r rate 200 25" -- keyboard repeat
     --spawn "xmodmap ~/.Xmodmap" -- Xmodmap
     spawn "xrdb -merge ~/.Xdefaults"
-    spawn "nvidia-settings -a InitialPixmapPlacement=2"
+    --spawn "nvidia-settings -a InitialPixmapPlacement=2"
     spawn "pidgin"
     spawn "akregator"
     spawn (home ++ "/C++/irssi-notifier/daemon >&/dev/null") -- irssi notification dameon

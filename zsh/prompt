@@ -31,6 +31,8 @@ preexec () {
 }
 
 setprompt() {
+	setopt prompt_subst
+
 	autoload colors zsh/terminfo
 	if [[ "$terminfo[colors]" -ge 8 ]]; then
 		colors
@@ -92,11 +94,11 @@ setprompt() {
 
 	if [[ $HOSTNAME == 'nas' ]]; then
 		PS1="$PR_SET_CHARSET$PR_STITLE${(e)PR_TITLEBAR}\
-$PR_BLACK${chroot:+($PR_GREEN$chroot$PR_BLACK) }(${USERCOLOR}%n$PR_BLACK@%b$PR_LIGHT_CYAN%m$PR_BLACK) [$PR_CYAN%D{%H}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%M}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%S}$PR_BLACK|%b$PR_LIGHT_CYAN%D{%a %b %d}$PR_BLACK] [%b$PR_LIGHT_CYAN%$PR_PWDLEN<...<%~%<<$PR_BLACK]
+$PR_BLACK"'${chroot:+($PR_GREEN$chroot$PR_BLACK) }'"(${USERCOLOR}%n$PR_BLACK@%b$PR_LIGHT_CYAN%m$PR_BLACK) [$PR_CYAN%D{%H}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%M}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%S}$PR_BLACK|%b$PR_LIGHT_CYAN%D{%a %b %d}$PR_BLACK] [%b$PR_LIGHT_CYAN%$PR_PWDLEN<...<%~%<<$PR_BLACK]
 $PR_CYAN>$PR_NO_COLOR "
 	else
 		PS1="$PR_SET_CHARSET$PR_STITLE${(e)PR_TITLEBAR}\
-$PR_BLACK┐ ${chroot:+($PR_GREEN$chroot$PR_BLACK) }(${USERCOLOR}%n$PR_BLACK@%b$PR_LIGHT_CYAN%m$PR_BLACK) [$PR_CYAN%D{%H}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%M}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%S}$PR_BLACK|%b$PR_LIGHT_CYAN%D{%a %b %d}$PR_BLACK] [%b$PR_LIGHT_CYAN%$PR_PWDLEN<...<%~%<<$PR_BLACK]
+$PR_BLACK┐ "'${chroot:+($PR_GREEN$chroot$PR_BLACK) }'"(${USERCOLOR}%n$PR_BLACK@%b$PR_LIGHT_CYAN%m$PR_BLACK) [$PR_CYAN%D{%H}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%M}%b$PR_LIGHT_CYAN:$PR_CYAN%D{%S}$PR_BLACK|%b$PR_LIGHT_CYAN%D{%a %b %d}$PR_BLACK] [%b$PR_LIGHT_CYAN%$PR_PWDLEN<...<%~%<<$PR_BLACK]
 $PR_BLACK└%b$PR_LIGHT_CYAN──$PR_CYAN─>$PR_NO_COLOR "
 	fi
 

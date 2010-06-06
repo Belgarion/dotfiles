@@ -60,6 +60,9 @@ else
 				free=$[$free+$val]
 			done
 			echo -------------------------------------------------------
+			totalb=$total
+			usedb=$used
+			freeb=$free
 			totalPostfix="K"
 			totalDecimals=0
 			usedPostfix="K"
@@ -101,7 +104,7 @@ else
 				$totalDecimals $total $totalPostfix \
 				$usedDecimals $used $usedPostfix \
 				$freeDecimals $free $freePostfix \
-				`calc -p "round((100/$total)/(100/$used)*100)"`
+				`calc -p "round(($usedb/$totalb)*100)"`
 		else
 			echo "Install calc"
 			df -h -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs $@
@@ -130,6 +133,9 @@ else
 				free=$[$free+$val]
 			done
 			echo -------------------------------------------------------
+			totalb=$total
+			usedb=$used
+			freeb=$free
 			totalPostfix="K"
 			totalDecimals=0
 			usedPostfix="K"
@@ -171,7 +177,7 @@ else
 				$totalDecimals $total $totalPostfix \
 				$usedDecimals $used $usedPostfix \
 				$freeDecimals $free $freePostfix \
-				`calc -p "round((100/$total)/(100/$used)*100)"`
+				`calc -p "round(($usedb/$totalb)*100)"`
 		else
 			echo "Install calc"
 			df -l -h -x none -x tmpfs -x usbfs -x aufs -x squashfs -x rootfs $@

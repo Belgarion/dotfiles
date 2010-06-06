@@ -1,5 +1,5 @@
 # vim: ft=zsh
-export MPD_HOST="mpdpassword@polgara"
+export MPD_HOST="mpdpassword@localhost"
 if [[ $HOST == "Belgarion" ]]; then
 	export PYOGRE_ROOT="/home/sebastian/Source/pyogre/root"
 	export PYTHONPATH=/home/sebastian/Source/pyogre/root/usr/lib/python2.5/site-packages
