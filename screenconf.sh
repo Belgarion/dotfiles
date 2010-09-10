@@ -38,6 +38,10 @@ __screen_host_default() {
 	screen_cmd bindkey -k k2 next
 	screen_cmd bindkey "OP" prev
 	screen_cmd bindkey "OQ" next
+
+	# PuTTY
+	screen_cmd bindkey "[11~" prev
+	screen_cmd bindkey "[12~" next
 }
 __screen_host_Belgarion() {
 	# Set the escape to ^qq
@@ -46,6 +50,10 @@ __screen_host_Belgarion() {
 
 	screen_cmd bindkey -k k3 prev
 	screen_cmd bindkey -k k4 next
+
+	# PuTTY
+	screen_cmd bindkey "[13~" prev
+	screen_cmd bindkey "[14~" next
 }
 
 [ ${STY} ] && [[ ${SCREEN_FIX_HOST} != ${HOSTNAME} ]] && __screen_config
