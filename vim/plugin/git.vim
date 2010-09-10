@@ -226,8 +226,13 @@ function! s:Expand(expr)
     endif
 endfunction
 
-command! -nargs=1 -complete=customlist,ListGitCommits GitCheckout call GitCheckout(<q-args>)
-command! -nargs=* -complete=customlist,ListGitCommits GitDiff     call GitDiff(<q-args>)
+if version >= 700
+	command! -nargs=1 -complete=customlist,ListGitCommits GitCheckout call GitCheckout(<q-args>)
+	command! -nargs=* -complete=customlist,ListGitCommits GitDiff     call GitDiff(<q-args>)
+else
+	command! -nargs=1 GitCheckout call GitCheckout(<q-args>)
+	command! -nargs=* GitDiff     call GitDiff(<q-args>)
+endif
 command!          GitStatus           call GitStatus()
 command! -nargs=? GitAdd              call GitAdd(<q-args>)
 command! -nargs=* GitLog              call GitLog(<q-args>)

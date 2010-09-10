@@ -82,7 +82,6 @@ set ignorecase
 set nowrapscan
 set showcmd
 set showmode
-set showtabline=1
 set autowrite
 set autoindent
 set ruler
@@ -104,7 +103,13 @@ set visualbell
 set guipty
 set foldmethod=marker
 set foldcolumn=2
-set listchars=tab:>-,extends:>,precedes:<,trail:-,nbsp:%,eol:$
+if version >= 700
+	set showtabline=1
+	set listchars=tab:>-,extends:>,precedes:<,trail:-,nbsp:%,eol:$
+
+	" Save session info
+	set sessionoptions=blank,buffers,curdir,folds,help,resize,tabpages,winsize,localoptions
+endif
 set splitright
 set splitbelow
 set shellslash
@@ -193,7 +198,7 @@ nnoremap <F11> :tabprevious<CR>
 inoremap <F11> <Esc>:tabprevious<CR>
 " }}}
 " Paste with ctrl+v
-"nmap <silent> <C-v> :set paste<CR>"*p:set nopaste<CR> 
+"nmap <silent> <C-v> :set paste<CR>"*p:set nopaste<CR>
 
 " Toggle show line endings with $
 nmap <F9> :set invlist <CR>
@@ -264,9 +269,6 @@ let mapleader = ","
 
 " Save info about files
 set viminfo='100
-
-" Save session info
-set sessionoptions=blank,buffers,curdir,folds,help,resize,tabpages,winsize,localoptions
 
 " Completion
 " Map C-Space to omnicomplete
