@@ -324,7 +324,7 @@ hi Pmenu ctermbg=236
 hi Comment gui=none
 
 highlight OverLength ctermbg=black guibg=black
-autocmd BufNewFile,BufRead * syn match OverLength /\%>80v.\+/ containedin=ALL
+autocmd BufNewFile,BufRead *.c,*.cpp,*.php,*.py syn match OverLength /\%>80v.\+/ containedin=ALL
 
 highlight ExtraWhitespace ctermbg=red guibg=red
 autocmd BufNewFile,BufRead * syn match ExtraWhitespace /\s\+$/ containedin=ALL
