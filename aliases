@@ -39,7 +39,7 @@ alias ssh-x='ssh -c arcfour,blowfish-cbc -XC'
 if [[ $UNAMES == "FreeBSD" ]]; then
 	alias dfh='df -hc -t nounionfs,nullfs '
 	alias dfhl='df -hcl -t nounionfs,nullfs '
-elif [[ $(df --version | head -1 | sed 's/.*\([0-9]\).[0-9]/\1/') -ge 8 ]]; then
+elif [[ $(df --version | head -1 | sed 's/.*\([0-9]\).[0-9]\+/\1/') -ge 8 ]]; then
 	alias dfh='df -h -x none -x tmpfs -x usbfs -x aufs -x squashfs \
 	-x rootfs -x devpts --total '
 	alias dfhl='df -l -h -x none -x tmpfs -x usbfs -x aufs -x squashfs \
