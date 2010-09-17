@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 dir=`pwd`
 timestamp=`date +%s`
 mkdir $dir/old.$timestamp
