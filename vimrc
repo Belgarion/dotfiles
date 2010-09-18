@@ -378,5 +378,7 @@ if $HOSTNAME == "nas"
 	let loaded_matchparen = 1
 elseif $HOSTNAME == "polgara"
 	let loaded_matchparen = 1
+elseif $HOSTNAME == "belgarion"
+	set pdev=MP640R
 endif
 " }}}
