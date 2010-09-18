@@ -245,6 +245,27 @@ if (type grc >&/dev/null); then
 fi
 # Color end
 
+confirm() {
+	echo -n "$@ "
+	read -r choice
+	case "$choice" in
+		y|Y) return 0;;
+		*) return 1;;
+	esac
+}
+
+luddprint() {
+	if [[ $# -le 0 ]]; then
+		print "Usage: $0 <filename>"
+		return 1
+	fi
+
+	if confirm "Are you sure you want to print '$1' to Edison.ludd? [y/n]"; then
+		echo "Printing file '$1' on Edison"
+		cat $1 | ssh orac.ludd.ltu.se lpr -P Edison
+	fi
+}
+
 upre() {
 	echo -n "uptime: `uptime | sed 's/.*up \(.*\),.*user.*/\1/'` :: record: "
 	if [[ "$UNAMES" == "FreeBSD" ]]; then
