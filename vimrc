@@ -289,6 +289,18 @@ func! MuttCfg() " {{{
 	set ft=mail                     " mail file type
 endfunc
 " }}}
+func! Template(extension) " {{{
+	let l:tmplPath=$HOME . "/.vim/skel/tmpl." . a:extension
+	let l:scriptPath=$HOME . "/.vim/skel/do_header"
+	if filereadable(l:tmplPath)
+		%d
+		silent execute '0r' l:tmplPath
+		if executable(l:scriptPath)
+			silent execute '%!' l:scriptPath expand('%')
+		endif
+		execute 'set ft='.a:extension
+	endif
+endfunc " }}}
 " {{{ Autocmd
 if has("autocmd")
 	autocmd BufNewFile,BufRead * set tw=0
@@ -310,6 +322,12 @@ if has("autocmd")
 	autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 	autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 	autocmd FileType c set omnifunc=ccomplete#CompleteCpp
+
+	" Key bindings
+	autocmd FileType tex nmap <buffer> E :!pdflatex %<CR>
+
+	" Templates
+	autocmd BufNewFile * call Template(expand("%:e"))
 
 	" Python {{{
 	autocmd FileType python set omnifunc=pythoncomplete#Complete
