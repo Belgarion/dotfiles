@@ -52,7 +52,7 @@ if &term =~ "vt100"
 endif
 " }}}
 " {{{ 256 color
-if &term == "xterm-256color" || &term == "screen-256color"
+if &term == "xterm-256color" || &term == "screen-256color" || &term == "rxvt-unicode"
 	set t_Co=256
 endif
 " }}}
