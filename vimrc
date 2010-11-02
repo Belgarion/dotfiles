@@ -328,7 +328,7 @@ if has("autocmd")
 	autocmd FileType tex inoremap ^ ^{}<LEFT>
 	autocmd FileType tex inoremap _ _{}<LEFT>
 	autocmd FileType tex inoremap { {}<LEFT>
-	autocmd FileType tex noremap ł :%s/\(\<<c-r>=expand("<cword>")<cr>\>\)/\\begin{\1}\r\r\\end{\1}/<CR><UP>
+	autocmd FileType tex noremap ß :%s/\(\<<c-r>=expand("<cword>")<cr>\>\)/\\begin{\1}\r\r\\end{\1}/<CR><UP>
 
 	" Templates
 	autocmd BufNewFile * call Template(expand("%:e"))
