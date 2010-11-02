@@ -325,6 +325,7 @@ if has("autocmd")
 
 	" Key bindings
 	autocmd FileType tex nmap <buffer> E :!pdflatex %<CR>
+	autocmd FileType tex inoremap ^ ^{}<LEFT>
 
 	" Templates
 	autocmd BufNewFile * call Template(expand("%:e"))
