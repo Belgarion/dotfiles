@@ -281,6 +281,9 @@ inoremap <Nul> <C-x><C-o>
 let Tlist_Auto_Open = 1
 let Tlist_Exit_OnlyWindow = 1
 " }}}
+" {{ Eclim
+let g:EclimProjectTreeAutoOpen = 1
+" }}
 func! MuttCfg() " {{{
 	"map <C-J> {gq}                  " Ctrl+J rejustifies current paragraph
 	"set formatoptions=tcroqv        " see :help formatoptions
