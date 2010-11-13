@@ -46,11 +46,11 @@ bind \\
 bind h
 bind ^h
 
-screen -t weechat      0 weechat-curses
+screen -t weechat      0 zsh
 screen -t mutt         1 mutt -y
-screen -t alsamixer	   2 alsamixer -c0
-screen -t ncmpcpp      3 ncmpcpp
-screen -t calcurse     4 calcurse
+#screen -t alsamixer	   2 alsamixer -c0
+#screen -t ncmpcpp      3 ncmpcpp
+#screen -t calcurse     4 calcurse
 
 # this will log screen errors to a daily log under the speficied directory
 logfile /home/sebastian/logs/screen_%y-%m-%d_%0c
