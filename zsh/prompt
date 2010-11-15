@@ -97,13 +97,23 @@ setprompt() {
 	[ -z $SHA ] && SHA="shasum"
 
 	hex_int=$(hostname | $SHA | tr '[a-z]' '[A-Z]' | sed -re 's/^(.).+$/\1/')
-	case $((0x${hex_int} % 6)) in
-		0)  HOSTCOLOR=$PR_GREEN ;;
+	case $((0x${hex_int} % 16)) in
+		0)  HOSTCOLOR=$PR_BLACK ;;
 		1)  HOSTCOLOR=$PR_LIGHT_CYAN ;;
-		2)  HOSTCOLOR=$PR_BLUE ;;
-		3)  HOSTCOLOR=$PR_YELLOW ;;
-		4)  HOSTCOLOR=$PR_RED ;;
-		5)  HOSTCOLOR=$PR_WHITE ;;
+		2)  HOSTCOLOR=$PR_CYAN ;;
+		3)  HOSTCOLOR=$PR_GREEN ;;
+		4)  HOSTCOLOR=$PR_LIGHT_BLACK ;;
+		5)  HOSTCOLOR=$PR_BLUE ;;
+		6)  HOSTCOLOR=$PR_LIGHT_BLUE ;;
+		7)  HOSTCOLOR=$PR_LIGHT_GREEN ;;
+		8)  HOSTCOLOR=$PR_LIGHT_MAGENTA ;;
+		9)  HOSTCOLOR=$PR_LIGHT_RED ;;
+		10)  HOSTCOLOR=$PR_LIGHT_WHITE ;;
+		11)  HOSTCOLOR=$PR_LIGHT_YELLOW ;;
+		12)  HOSTCOLOR=$PR_MAGENTA ;;
+		13)  HOSTCOLOR=$PR_RED ;;
+		14)  HOSTCOLOR=$PR_WHITE ;;
+		15)  HOSTCOLOR=$PR_YELLOW ;;
 	esac
 
 	if [[ $HOSTNAME == 'nas' ]]; then
