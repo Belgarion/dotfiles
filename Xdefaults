@@ -98,8 +98,10 @@ urxvt*color9:	        #FF7272
 urxvt*color2:	        #ABCB8D
 urxvt*color10:	        #AFD78A
 !yellow
-urxvt*color3:	        #E8AE5B
+!urxvt*color3:	        #E8AE5B
+urxvt*color3:	        #d9944c
 urxvt*color11:	        #FFA75D
+!urxvt*color11:	        #d7af87
 !blue
 urxvt*color4:	        #71C5F4
 urxvt*color12:	        #67CDE9
