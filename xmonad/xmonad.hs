@@ -93,8 +93,8 @@ main = do
     let myWidth = read (show (widthOfScreen scr)) :: Int
     let myHeight = read (show (heightOfScreen scr)) :: Int
 
-    let myStatusBar = "dzen2 -x '0' -y '0' -h '16' -w " ++ show (myWidth - 580) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e 'onstart=lower'"
-    let myTopBar = "conky -c ~/.conkytoprc | dzen2 -x " ++ show (myWidth - 580) ++ " -y '0' -h '16' -w '580' -ta 'r' -bg '" ++ myNormalBGColor  ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e 'onstart=lower'"
+    let myStatusBar = "dzen2 -x '0' -y '0' -h '16' -w " ++ show (myWidth - 680) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e 'onstart=lower'"
+    let myTopBar = "conky -c ~/.conkytoprc | dzen2 -x " ++ show (myWidth - 680) ++ " -y '0' -h '16' -w '680' -ta 'r' -bg '" ++ myNormalBGColor  ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e 'onstart=lower'"
     let myBottomBar = "conky -c ~/.conkybottomrc | dzen2 -x '0' -y " ++ show (myHeight - 16) ++ " -h '16' -w " ++ show (myWidth-128) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn '" ++ myFont ++ "' -e 'onstart=lower'"
     din  <- spawnPipe myStatusBar
     din2 <- spawnPipe myTopBar
@@ -168,7 +168,7 @@ restart_dzen = do
     let myWidth = read (show (widthOfScreen scr)) :: Int
     let myHeight = read (show (heightOfScreen scr)) :: Int
 
-    let myTopBar = "conky -c ~/.conkytoprc | dzen2 -x " ++ show (myWidth - 580) ++ " -y '0' -h '16' -w '580' -ta 'r' -bg '" ++ myNormalBGColor  ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e 'onstart=lower'"
+    let myTopBar = "conky -c ~/.conkytoprc | dzen2 -x " ++ show (myWidth - 680) ++ " -y '0' -h '16' -w '680' -ta 'r' -bg '" ++ myNormalBGColor  ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e 'onstart=lower'"
     let myBottomBar = "conky -c ~/.conkybottomrc | dzen2 -x '0' -y " ++ show (myHeight - 16) ++ " -h '16' -w " ++ show (myWidth-128) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn '" ++ myFont ++ "' -e 'onstart=lower'"
     spawn myTopBar
     spawn myBottomBar
