@@ -56,6 +56,19 @@ __screen_host_Belgarion() {
 	screen_cmd bindkey "[14~" next
 }
 
+__screen_host_Belkira() {
+	# Set the escape to ^qq
+	screen_cmd defescape q
+	screen_cmd escape q
+
+	screen_cmd bindkey -k k3 prev
+	screen_cmd bindkey -k k4 next
+
+	# PuTTY
+	screen_cmd bindkey "[13~" prev
+	screen_cmd bindkey "[14~" next
+}
+
 [ ${STY} ] && [[ ${SCREEN_FIX_HOST} != ${HOSTNAME} ]] && __screen_config
 unset __screen_config __screen_host_default __screen_host_Belgarion
 # End of screen per-host configuration
