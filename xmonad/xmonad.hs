@@ -14,6 +14,7 @@ import XMonad.Actions.NoBorders
 import XMonad.Actions.SpawnOn
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.UrgencyHook
 --import XMonad.Hooks.EwmhDesktops
 import XMonad.Layout.HintedTile
@@ -118,7 +119,7 @@ main = do
        , terminal = myTerminal
        , layoutHook = windowNavigation myLayout
        , manageHook = manageSpawn sp <+> myManageHook <+> manageDocks
-       , workspaces = ["1:term", "2:www", "3:rss", "4:im"] ++ map show [5..18 ::Int]
+       , workspaces = ["1:term", "2:www", "3:mail", "4:im"] ++ map show [5..18 ::Int]
        , numlockMask = mod2Mask
        , modMask = mod1Mask
        , keys = myKeys sp
@@ -135,6 +136,7 @@ myUrgencyHook height width = withUrgencyHook dzenUrgencyHook
 
 
 startup home = do
+    spawn (home ++ "/resolution") -- set resolution to 1920x1200 with correct modeline
     spawn "xset -b b off" -- disable bell
     --spawn "xset m 9/8 10" --mouse acceleration
     spawn "xset m 0 0" -- disable mouse acceleration
@@ -143,9 +145,10 @@ startup home = do
     spawn "xrdb -merge ~/.Xdefaults"
     --spawn "nvidia-settings -a InitialPixmapPlacement=2"
     spawn "pidgin"
-    spawn "akregator"
-    spawn (home ++ "/C++/irssi-notifier/daemon >&/dev/null") -- irssi notification dameon
-    spawn "korgac -icon korgac"
+    spawn "thunderbird"
+    --spawn "akregator"
+    --spawn (home ++ "/C++/irssi-notifier/daemon >&/dev/null") -- irssi notification dameon
+    --spawn "korgac -icon korgac"
     spawn (home ++ "/bin/start_gnome-screensaver")
     spawn "gnome-screensaver-command --lock"
 
@@ -173,7 +176,7 @@ restart_dzen = do
 -- Layout options:
 myLayout = avoidStruts $ smartBorders $
     onWorkspace "1:term" (hintedTile Wide ||| noBorders Full) $
-    onWorkspaces ["2:www","3:rss"] (noBorders Full) $
+    onWorkspaces ["2:www","3:mail"] (noBorders Full) $
     onWorkspace "4:im" (noBorders $ HintedTile nmaster delta (4/5) TopLeft Tall) $
     (hintedTile Tall ||| hintedTile Wide ||| (noBorders Full) ||| (ThreeCol 1 (3/100) (1/2)) ||| ResizableTall 1 (3/100) (1/2) [])
     where
@@ -275,13 +278,14 @@ myManageHook = composeAll . concat $
     , [title =? t --> doFloat | t <- myOtherFloats]
     , [resource =? r --> doIgnore | r <- myIgnores]
     , [className =? "Firefox-bin" --> doF (W.shift "2:www")]
-    , [className =? "Akregator" --> doF (W.shift "3:rss")]
+    , [className =? "Thunderbird" --> doF (W.shift "3:mail")]
     , [className =? "Pidgin" --> doF (W.shift "4:im")]
     , [className =? "Eclipse" --> doF (W.shift "10")]
+    , [isFullscreen --> doFullFloat]
     ]
     where
     myFloats = ["ekiga", "Gimp", "gimp", "MPlayer", "Nitrogen", "Transmission-gtk", "Xmessage", "xmms"]
-    myOtherFloats = ["Downloads", "Iceweasel Preferences", "Save As...", "Compose: (no subject)", "Icedove Preferences", "Tag and File Name scan", "Preferences...", "Confirm...", "gmpc - Configuration", "gmpc - song info", "Save Playlist", "GQview Preferences", "Inkscape Preferences (Shift+Ctrl+P)", "Select file to open", "Select file to save to", "Warning", "Closing Project - K3b", "Open Files - K3b", "Options - K3b", "Close Nicotine-Plus?", "Nicotine Settings", "OpenOffice.org 2.0", "Open", "Options - OpenOffice.org - User Data", "File Properties", "Preference", "Plugins:", "Preferences", "Firefox - Återställ föregående session", "Firefox-inställningar", "StepMania - pop * candy -", "Custom Smiley Manager", "Insticksmoduler", "Systemlogg", "Volbar"]
+    myOtherFloats = ["Downloads", "Iceweasel Preferences", "Save As...", "Compose: (no subject)", "Icedove Preferences", "Tag and File Name scan", "Preferences...", "Confirm...", "gmpc - Configuration", "gmpc - song info", "Save Playlist", "GQview Preferences", "Inkscape Preferences (Shift+Ctrl+P)", "Select file to open", "Select file to save to", "Warning", "Closing Project - K3b", "Open Files - K3b", "Options - K3b", "Close Nicotine-Plus?", "Nicotine Settings", "OpenOffice.org 2.0", "Open", "Options - OpenOffice.org - User Data", "File Properties", "Preference", "Plugins:", "Preferences", "Firefox - Återställ föregående session", "Firefox-inställningar", "StepMania - pop * candy -", "Custom Smiley Manager", "Insticksmoduler", "Systemlogg", "Volbar", "Minecraft Launcher", "Minecraft"]
     myIgnores = ["stalonetray", "trayer"]
 
 -- dynamicLog pretty printer for dzen:
