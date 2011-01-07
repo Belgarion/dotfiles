@@ -206,8 +206,9 @@ alias ifstat='ifstat -S'
 (type htop >&/dev/null) && alias top='htop'
 alias man='LC_ALL=C LANG=C man'
 alias extract_initrd_here='zcat /initrd.img | cpio -i -d -H newc --no-absolute-filenames'
-alias mplayer='mplayer -slang eng'
-mplayer_rar() { unrar p -inul $1 | mplayer - ; }
+alias mplayer='mplayer -slang eng -af volnorm'
+mplayer_rar() { unrar p -inul $1 | mplayer -af volnorm - ; }
+mplayer_dvd() { mplayer -af volnorm -dvd-device "$1" dvd:// }
 alias wine='XMODIFIER="" XMODIFIERS="" wine'
 alias dm7020_path='export PATH=/opt/dm7020/bin:$PATH'
 alias du='du -c'
