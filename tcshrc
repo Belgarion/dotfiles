@@ -1,0 +1,7 @@
+set path = (~/apps/bin $path)
+
+if ( $?prompt ) then
+	if ( $shlvl < 2 ) then
+		exec zsh
+	endif
+endif
