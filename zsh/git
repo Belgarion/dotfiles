@@ -1,5 +1,5 @@
 # vim: ft=zsh
-if [[ -x `which -p git` ]]; then
+if [[ -x `which git` ]]; then
 	function git-branch-name() {
 		git branch 2> /dev/null | grep --color=never '^\*' | sed 's/^\*\ //'
 	}

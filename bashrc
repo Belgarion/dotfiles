@@ -59,6 +59,7 @@ esac
 #Configure screen
 [ -f ~/.screenconf.sh ] && . ~/.screenconf.sh
 
+[ -d ~/apps/bin ] && PATH=~/apps/bin:"${PATH}"
 [ -d ~/bin ] && PATH=~/bin:"${PATH}"
 
 [ -f ~/.bash_os-based ] && . ~/.bash_os-based

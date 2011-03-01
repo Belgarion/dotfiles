@@ -42,6 +42,8 @@ addToPath "^" "/usr/local/sbin"
 addToPath "^" "/usr/local/bin"
 addToPath "$" "/opt/vmware/server/lib/bin"
 addToPath "^" "$HOME/SDK/android-sdk-linux/tools/"
+addToPath "^" "$HOME/SDK/android-sdk-linux/platform-tools/"
+addToPath "^" "$HOME/apps/bin"
 addToPath "^" "$HOME/bin"
 
 export LANG='sv_SE.UTF-8'
