@@ -20,7 +20,7 @@ ssh() {
 		#local NAME="`dcop $KONSOLE_DCOP_SESSION sessionName`" || NAME="`basename $SHELL`"
 		local NAME="`konsole-title`" || NAME="`basename $SHELL`"
 		konsole-title $1
-	elif [ $STY ]; then
+	elif [ $STY ] || [ $TMUX ]; then
 		local NAME="`basename $SHELL`"
 		screen-title $1
 	fi
@@ -30,7 +30,7 @@ ssh() {
 	fi
 
 	if [ $KONSOLE_DCOP_SESSION ]; then konsole-title "$NAME";
-	elif [ $STY ]; then screen-title "$NAME";
+	elif [ $STY ] || [ $TMUX ]; then screen-title "$NAME";
 	fi
 }
 alias ssh-x='ssh -c arcfour,blowfish-cbc -XC'
