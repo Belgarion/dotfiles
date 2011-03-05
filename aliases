@@ -193,6 +193,7 @@ alias cd..='cd ..'
 alias cal='cal -m'
 alias rm='rm -i'
 alias mv='mv -i'
+alias tmux="tmux -2" # force 256-colors
 (type vim >&/dev/null) && [ $('vim' --version |head -1|sed 's/.*\([0-9]\)\.[0-9].*/\1/') -ge 7 ] &&  alias vim='vim -p'
 alias icl2ico='wrestool -x --output=. -t14'
 alias ico2png='for i in *.ico; do convert "$i" "$i.png"; done'
