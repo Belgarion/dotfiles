@@ -24,7 +24,7 @@ precmd() {
 
 setopt extended_glob
 preexec () {
-	if [ $STY ]; then
+	if [ $STY ] || [ $TMUX ]; then
 		local CMD=${1[(wr)^(<*|*=*|sudo|exec|-*)]}
 		echo -n "\ek$CMD\e\\"
 	fi
@@ -73,7 +73,7 @@ setprompt() {
 
 	###
 	# Decide whether to set a screen title
-	if [ $STY ]; then
+	if [ $STY ] || [ $TMUX ]; then
 		PR_STITLE=$'%{\ekzsh\e\\%}'
 	else
 		PR_STITLE=''
