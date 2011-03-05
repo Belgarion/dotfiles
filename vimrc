@@ -57,7 +57,7 @@ if &term == "xterm-256color" || &term == "screen-256color" || &term == "rxvt-uni
 endif
 " }}}
 " {{{ Mouse
-set ttymouse=xterm2
+set ttymouse=xterm
 set mouse=a
 
 " Scrolling
