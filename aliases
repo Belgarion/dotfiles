@@ -35,6 +35,16 @@ ssh() {
 }
 alias ssh-x='ssh -c arcfour,blowfish-cbc -XC'
 
+aklog-ltu() {
+	if [[ $# -le 0 ]]; then
+		print "Usage: $0 <username>"
+		return 1
+	fi
+	KRB5CCNAME=/tmp/krb5cc_${UID}ltu
+	kinit $1@LTU.SE
+	aklog -d ltu.se
+}
+
 
 if [[ $UNAMES == "FreeBSD" ]]; then
 	alias dfh='df -hc -t nounionfs,nullfs '
