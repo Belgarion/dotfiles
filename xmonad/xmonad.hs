@@ -33,6 +33,7 @@ import System.Exit
 import System.IO
 import System.Directory
 import System.Environment
+import Control.Monad (when)
 
 import System.Posix.IO
 import System.Posix.Process
@@ -46,6 +47,7 @@ import qualified System.IO.UTF8
 import qualified XMonad.Actions.FlexibleResize as Flex
 import qualified XMonad.StackSet as W
 
+import XMonad.Util.Replace (replace)
 
 -- Settings {{{
 -- Definitions {{{
@@ -85,6 +87,9 @@ myTerminal = "urxvt"
 
 main :: IO ()
 main = do
+    args <- getArgs
+    when ("--replace" `elem` args) replace
+
     home <- catch (getEnv "HOME") ( const $ return [])
 
     d <- catch (getEnv "DISPLAY") ( const $ return [])
@@ -95,18 +100,20 @@ main = do
 
     let myStatusBar = "dzen2 -x '0' -y '0' -h '16' -w " ++ show (myWidth - 680) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e 'onstart=lower'"
     let myTopBar = "conky -c ~/.conkytoprc | dzen2 -x " ++ show (myWidth - 680) ++ " -y '0' -h '16' -w '680' -ta 'r' -bg '" ++ myNormalBGColor  ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e 'onstart=lower'"
-    let myBottomBar = "conky -c ~/.conkybottomrc | dzen2 -x '0' -y " ++ show (myHeight - 16) ++ " -h '16' -w " ++ show (myWidth-128) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn '" ++ myFont ++ "' -e 'onstart=lower'"
+    --let myBottomBar = "conky -c ~/.conkybottomrc | dzen2 -x '0' -y " ++ show (myHeight - 16) ++ " -h '16' -w " ++ show (myWidth-128) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn '" ++ myFont ++ "' -e 'onstart=lower'"
     din  <- spawnPipe myStatusBar
     din2 <- spawnPipe myTopBar
-    din3 <- spawnPipe myBottomBar
+    --din3 <- spawnPipe myBottomBar
 
     sp <- mkSpawner
 
     spawn ("stalonetray -i 16 --max-width 128 --geometry 128x16-0-0 -bg '" ++ myNormalBGColor ++ "'") -- tray
     spawn ("xsetroot -solid '" ++ myNormalBGColor ++ "'") -- set background color
-    spawn "numlockx on" -- activate numlock
+    --spawn "numlockx on" -- activate numlock
     spawn "xsetroot -cursor_name left_ptr" --set mouse cursor
     spawn "nitrogen --restore" -- set background
+    spawn "xset fp+ /afs/ltu.se/students/all/seblar-0/apps/share/fonts/terminus" -- add terminus to font paths
+    spawn "xset fp rehash" -- reload font cache
 
     file <- doesFileExist "/tmp/xmonad_restart"
     if (file)
@@ -136,21 +143,21 @@ myUrgencyHook height width = withUrgencyHook dzenUrgencyHook
 
 
 startup home = do
-    spawn (home ++ "/resolution") -- set resolution to 1920x1200 with correct modeline
+    --spawn (home ++ "/resolution") -- set resolution to 1920x1200 with correct modeline
     spawn "xset -b b off" -- disable bell
     --spawn "xset m 9/8 10" --mouse acceleration
-    spawn "xset m 0 0" -- disable mouse acceleration
+    --spawn "xset m 0 0" -- disable mouse acceleration
     spawn "xset r rate 200 25" -- keyboard repeat
     --spawn "xmodmap ~/.Xmodmap" -- Xmodmap
     spawn "xrdb -merge ~/.Xdefaults"
     --spawn "nvidia-settings -a InitialPixmapPlacement=2"
-    spawn "pidgin"
-    spawn "thunderbird"
+    --spawn "pidgin"
+    --spawn "thunderbird"
     --spawn "akregator"
     --spawn (home ++ "/C++/irssi-notifier/daemon >&/dev/null") -- irssi notification dameon
     --spawn "korgac -icon korgac"
-    spawn (home ++ "/bin/start_gnome-screensaver")
-    spawn "gnome-screensaver-command --lock"
+    --spawn (home ++ "/bin/start_gnome-screensaver")
+    --spawn "gnome-screensaver-command --lock"
 
 restart_xmonad :: X ()
 restart_xmonad = do
@@ -169,9 +176,9 @@ restart_dzen = do
     let myHeight = read (show (heightOfScreen scr)) :: Int
 
     let myTopBar = "conky -c ~/.conkytoprc | dzen2 -x " ++ show (myWidth - 680) ++ " -y '0' -h '16' -w '680' -ta 'r' -bg '" ++ myNormalBGColor  ++ "' -fg '" ++ myNormalFGColor ++ "' -fn 'fixed' -e 'onstart=lower'"
-    let myBottomBar = "conky -c ~/.conkybottomrc | dzen2 -x '0' -y " ++ show (myHeight - 16) ++ " -h '16' -w " ++ show (myWidth-128) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn '" ++ myFont ++ "' -e 'onstart=lower'"
+    --let myBottomBar = "conky -c ~/.conkybottomrc | dzen2 -x '0' -y " ++ show (myHeight - 16) ++ " -h '16' -w " ++ show (myWidth-128) ++ " -ta 'l' -bg '" ++ myNormalBGColor ++ "' -fg '" ++ myNormalFGColor ++ "' -fn '" ++ myFont ++ "' -e 'onstart=lower'"
     spawn myTopBar
-    spawn myBottomBar
+    --spawn myBottomBar
 
 -- Layout options:
 myLayout = avoidStruts $ smartBorders $
