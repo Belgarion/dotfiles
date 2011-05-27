@@ -1,7 +1,8 @@
 set path = (~/apps/bin $path)
+setenv LD_LIBRARY_PATH /afs/ltu.se/students/all/seblar-0/apps/lib
 
 if ( $?prompt ) then
-	if ( $shlvl < 2 ) then
+	if ( $shlvl < 6 ) then
 		exec zsh
 	endif
 endif

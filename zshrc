@@ -49,6 +49,7 @@ addToPath "^" "$HOME/bin"
 export LANG='sv_SE.UTF-8'
 export TZ="Europe/Stockholm"
 export HOSTNAME="`hostname`"
+export LD_LIBRARY_PATH=/afs/ltu.se/students/all/seblar-0/apps/lib
 
 if which vimmanpager >&/dev/null; then
 	export MANPAGER="vimmanpager"
@@ -122,10 +123,8 @@ export MOZ_DISABLE_PANGO=1
 which toilet >&/dev/null && toilet --gay "$UNAMES "
 
 if [ -e ~/TODO ]; then
-	if [[ $SHLVL -eq 4 || $SHLVL -eq 5 ]]; then
-		echo tail ~/TODO -n5
-		tail ~/TODO -n5
-	fi
+	echo tail ~/TODO -n5
+	tail ~/TODO -n5
 fi
 
 #stty erase 
