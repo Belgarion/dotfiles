@@ -1,5 +1,6 @@
 background no
-out_to_console
+out_to_console yes
+out_to_x no
 update_interval 1
 use_spacer none
 
