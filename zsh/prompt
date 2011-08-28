@@ -93,7 +93,8 @@ setprompt() {
 	fi
 
 	# Host color based on sha1 hash of hostname
-	which -s sha1 >/dev/null && SHA="sha1"
+	which sha1 2>&1 >/dev/null && SHA="sha1"
+	which sha1sum 2>&1 >/dev/null && SHA="sha1sum"
 	[ -z $SHA ] && SHA="shasum"
 
 	hex_int=$(hostname | $SHA | tr '[a-z]' '[A-Z]' | sed -re 's/^(.).+$/\1/')

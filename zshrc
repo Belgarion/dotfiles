@@ -164,3 +164,5 @@ if type keychain >&/dev/null; then
 fi
 
 type fortune >&/dev/null && fortune
+export SDL_AUDIODRIVER="pulse"
+

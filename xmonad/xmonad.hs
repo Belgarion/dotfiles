@@ -102,7 +102,7 @@ main = do
 
     sp <- mkSpawner
 
-    spawn ("stalonetray -i 16 --max-width 128 --geometry 128x16-0-0 -bg '" ++ myNormalBGColor ++ "'") -- tray
+    spawn ("stalonetray -bg '" ++ myNormalBGColor ++ "'") -- tray
     spawn ("xsetroot -solid '" ++ myNormalBGColor ++ "'") -- set background color
     spawn "numlockx on" -- activate numlock
     spawn "xsetroot -cursor_name left_ptr" --set mouse cursor
@@ -139,7 +139,7 @@ startup home = do
     spawn (home ++ "/resolution") -- set resolution to 1920x1200 with correct modeline
     spawn "xset -b b off" -- disable bell
     --spawn "xset m 9/8 10" --mouse acceleration
-    spawn "xset m 0 0" -- disable mouse acceleration
+    spawn "xset m 0 150" -- disable mouse acceleration
     spawn "xset r rate 200 25" -- keyboard repeat
     --spawn "xmodmap ~/.Xmodmap" -- Xmodmap
     spawn "xrdb -merge ~/.Xdefaults"
@@ -150,7 +150,8 @@ startup home = do
     --spawn (home ++ "/C++/irssi-notifier/daemon >&/dev/null") -- irssi notification dameon
     --spawn "korgac -icon korgac"
     spawn (home ++ "/bin/start_gnome-screensaver")
-    spawn "gnome-screensaver-command --lock"
+    -- spawn "gnome-screensaver-command --lock"
+    spawn "setxkbmap se dvorak -option ctrl:swapcaps"
 
 restart_xmonad :: X ()
 restart_xmonad = do
