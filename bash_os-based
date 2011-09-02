@@ -61,3 +61,8 @@ fi
 if [[ "$UNAMES" == "OpenBSD" ]]; then
 	export PKG_PATH="ftp://ftp.sunet.se/pub/OpenBSD/4.3/packages/i386"
 fi
+
+if [[ "$UNAMES" == "SunOS" ]]; then
+	export TERM=xterm
+	unalias grep
+fi

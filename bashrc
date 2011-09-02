@@ -8,7 +8,7 @@
 UNAMES=`uname -s`
 export UNAMES
 
-echo $LANG | grep -i utf >/dev/null && UTF8=1 || UTF8=0
+echo $LANG | 'grep' -i utf >/dev/null && UTF8=1 || UTF8=0
 
 # don't put duplicate lines in the history. See bash(1) for more options
 export HISTCONTROL=ignoredups
@@ -70,7 +70,7 @@ if (which most >&/dev/null); then
 	export PAGER="most -s"
 	export BROWSER="most -s"
 fi
-[ -f ~/.sh/less_colors ] && . ~/.sh/less_colors 
+[ -f ~/.sh/less_colors ] && . ~/.sh/less_colors
 export LESS='-R -M --shift 5'
 (which lesspipe.sh >&/dev/null) && export LESSOPEN='|lesspipe.sh %s'
 
