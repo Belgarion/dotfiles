@@ -15,6 +15,12 @@ zmodload -a -i zsh/zpty zpty
 zmodload -a -i zsh/zprof zprof
 #zmodload -ap zsh/mapfile mapfile
 
+#Checks if zsh version is greater than or equal to 4.3
+is43() {
+	[[ $ZSH_VERSION == <4->.<3->* ]] && return 0
+	return 1
+}
+
 addToPath() {
 	local pos=$1
 	local dir=$2
@@ -45,6 +51,7 @@ addToPath "^" "$HOME/SDK/android-sdk-linux/tools/"
 addToPath "^" "$HOME/SDK/android-sdk-linux/platform-tools/"
 addToPath "^" "$HOME/apps/bin"
 addToPath "^" "$HOME/bin"
+addToPath "$" "/mnt/80G/Xilinx/13.1/ISE_DS/ISE/bin/lin64/"
 
 export LANG='sv_SE.UTF-8'
 export TZ="Europe/Stockholm"
@@ -158,9 +165,22 @@ if [[ "x${HOSTNAME/*.ltu.se/}" == "x" ]]; then
 	export LANG='en_US.utf8'
 fi
 
+# LUDD Paths
+addToPath "$" "/software/mips-sde/06.61/bin"
+addToPath "$" "/usr/ccs/bin"
+addToPath "$" "/usr/ccs/sbin"
+addToPath "$" "/opt/csw/bin"
+addToPath "$" "/opt/csw/sbin"
+
 if type keychain >&/dev/null; then
 	keychain ~/.ssh/id_rsa ~/.ssh/id_dsa
 	fsource ~/.keychain/${HOSTNAME}-sh
 fi
 
 type fortune >&/dev/null && fortune
+
+# Fix java in xmonad
+export _JAVA_AWT_WM_NONREPARENTING=1
+#export AWT_TOOLKIT=MToolkit
+
+export ANDROID_JAVA_HOME=$JAVA_HOME
