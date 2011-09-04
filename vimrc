@@ -344,12 +344,6 @@ if has("autocmd")
 endif
 "}}}
 " {{{ Theme
-colorscheme zenburn
-set background=dark
-hi Normal ctermbg=black
-hi LineNr ctermbg=black guibg=#3f3f3f
-hi Pmenu ctermbg=236
-hi Comment gui=none
 
 highlight OverLength ctermbg=black guibg=black
 autocmd BufNewFile,BufRead *.c,*.cpp,*.php,*.py syn match OverLength /\%>80v.\+/ containedin=ALL
@@ -360,22 +354,29 @@ autocmd BufNewFile,BufRead * syn match ExtraWhitespace /\s\+$/ containedin=ALL
 let g:bg = 0
 
 function! LightBG()
+	set background=dark
+	colorscheme zenburn
 	if &t_Co == 256
 		hi Normal ctermbg=238
 		hi LineNr ctermbg=237 ctermfg=248
 		hi NonText ctermfg=242
-		set background=dark
+		"set background=dark
+		hi Pmenu ctermbg=236
 	endif
+	hi Comment gui=none
 endfunction
 command! LightBG call LightBG()
 
 function! DarkBG()
+	set background=dark
+	colorscheme zenburn
 	if &t_Co == 256
 		hi Normal ctermbg=black
 		hi LineNr ctermfg=248 ctermbg=0
 		hi NonText ctermfg=238
-		set background=dark
+		hi Pmenu ctermbg=236
 	endif
+	hi Comment gui=none
 endfunction
 command! DarkBG call DarkBG()
 

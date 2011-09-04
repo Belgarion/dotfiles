@@ -45,6 +45,8 @@ import qualified Data.Map as M
 import qualified System.IO.UTF8
 import qualified XMonad.Actions.FlexibleResize as Flex
 import qualified XMonad.StackSet as W
+--import XMonad.Hooks.ICCCMFocus -- use in next xmonad-contrib to fix focus bugs
+
 
 
 -- Settings {{{
@@ -125,7 +127,9 @@ main = do
        , keys = myKeys sp
        , mouseBindings = myMouseBindings
        , borderWidth = 1
-       , logHook = dynamicLogWithPP $ myLogHook din home
+       , logHook = do
+           --takeTopFocus -- use in next xmonad-contrib to fix focus bugs
+           dynamicLogWithPP $ myLogHook din home
        , focusFollowsMouse = True
        }
 
@@ -139,7 +143,7 @@ startup home = do
     spawn (home ++ "/resolution") -- set resolution to 1920x1200 with correct modeline
     spawn "xset -b b off" -- disable bell
     --spawn "xset m 9/8 10" --mouse acceleration
-    spawn "xset m 0 150" -- disable mouse acceleration
+    spawn "xset m 0 0" -- disable mouse acceleration
     spawn "xset r rate 200 25" -- keyboard repeat
     --spawn "xmodmap ~/.Xmodmap" -- Xmodmap
     spawn "xrdb -merge ~/.Xdefaults"
@@ -150,7 +154,7 @@ startup home = do
     --spawn (home ++ "/C++/irssi-notifier/daemon >&/dev/null") -- irssi notification dameon
     --spawn "korgac -icon korgac"
     spawn (home ++ "/bin/start_gnome-screensaver")
-    -- spawn "gnome-screensaver-command --lock"
+    spawn "gnome-screensaver-command --lock"
     spawn "setxkbmap se dvorak -option ctrl:swapcaps"
 
 restart_xmonad :: X ()
