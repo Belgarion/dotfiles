@@ -7,10 +7,11 @@ else
 endif
 
 if has("unix")
-	let &shell="zsh"
+	if executable("zsh")
+		let &shell="zsh"
+	endif
 	set clipboard=autoselect
 endif
-
 " }}}
 " {{{ Terminals and colors
 " {{{ Makes title work in screen
@@ -18,7 +19,7 @@ if &term == "screen" || &term == "screen-256color"
   set t_ts=]0;
   set t_fs=\
 endif
-if &term == "screen" || &term == "screen-256color" || &term == "xterm" 
+if &term == "screen" || &term == "screen-256color" || &term == "xterm"
   set title
 endif
 " }}}
@@ -40,11 +41,11 @@ if &term =~ "vt100"
   set t_Co=8           "set number of colors
   set t_Sf=[3%p1%dm  "set foreground color
   set t_Sb=[4%p1%dm  "set background color
-  if osys == "Linux"
+  if osys =~? "Linux"
 	  set t_kD=[3~      "fix delete button
 	  set t_kh=[1~      "fix home button
 	  set t_@7=[4~      "fix end button
-  elseif osys == "FreeBSD"
+  elseif osys =~? "FreeBSD"
 	  "set t_kD=[3~      "fix delete button
 	  set t_kh=[H      "fix home button
 	  set t_@7=[F      "fix end button
@@ -397,7 +398,7 @@ command! ToggleBG call ToggleBG()
 
 LightBG
 
-if osys=="windows"
+if osys ==? "windows"
 	set guifont=ter-112n:h9
 	set printfont=ter-112n:h9
 else
@@ -406,6 +407,16 @@ else
 endif
 " }}}
 " {{{ Host Specific
+if osys =~? "Linux"
+	let domainname = system('domainname -d')
+else
+	let domainname = "unknown domain"
+endif
+
+if domainname =~? "ludd\.ltu\.se"
+	set pdev=Edison
+endif
+
 if $HOSTNAME == "nas"
 	let Tlist_Auto_Open = 0
 	let loaded_matchparen = 1
