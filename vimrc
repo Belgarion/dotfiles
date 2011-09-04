@@ -364,6 +364,8 @@ function! LightBG()
 		hi Pmenu ctermbg=236
 	endif
 	hi Comment gui=none
+	highlight OverLength ctermbg=black guibg=black
+	highlight ExtraWhitespace ctermbg=red guibg=red
 endfunction
 command! LightBG call LightBG()
 
@@ -377,6 +379,8 @@ function! DarkBG()
 		hi Pmenu ctermbg=236
 	endif
 	hi Comment gui=none
+	highlight OverLength ctermbg=black guibg=black
+	highlight ExtraWhitespace ctermbg=red guibg=red
 endfunction
 command! DarkBG call DarkBG()
 
