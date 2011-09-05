@@ -384,6 +384,8 @@ elif [[ "$UNAMES" == "Darwin" ]]; then
 			alias ls="ls -G -F"
 		fi
 	fi
+elif [[ "$UNAMES" == "SunOS" ]]; then
+	[[ -e /usr/sfw/bin/ggrep ]] && alias grep="/usr/sfw/bin/ggrep --color=auto"
 fi
 
 alias l='ls -CF'

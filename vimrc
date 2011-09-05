@@ -417,12 +417,12 @@ if domainname =~? "ludd\.ltu\.se"
 	set pdev=Edison
 endif
 
-if $HOSTNAME == "nas"
+if $HOSTNAME ==? "nas"
 	let Tlist_Auto_Open = 0
 	let loaded_matchparen = 1
-elseif $HOSTNAME == "polgara"
+elseif $HOSTNAME ==? "polgara"
 	let loaded_matchparen = 1
-elseif $HOSTNAME == "belgarion"
+elseif $HOSTNAME ==? "belgarion"
 	set pdev=MP640R
 endif
 " }}}
