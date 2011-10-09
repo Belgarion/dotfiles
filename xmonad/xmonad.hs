@@ -28,6 +28,7 @@ import XMonad.ManageHook
 import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Util.Run
+import XMonad.Hooks.SetWMName
 --import Text.Regex.Posix
 import System.Exit
 import System.IO
@@ -128,9 +129,10 @@ main = do
        , mouseBindings = myMouseBindings
        , borderWidth = 1
        , logHook = do
-           --takeTopFocus -- use in next xmonad-contrib to fix focus bugs
+           --takeTopFocus -- use in next xmonad-contrib to fix focus bugs (http://code.google.com/p/xmonad/issues/detail?id=177)
            dynamicLogWithPP $ myLogHook din home
        , focusFollowsMouse = True
+       , startupHook = setWMName "LG3D" -- fix java bug with non reparenting wm, because sun/oracle jdk uses a hardcoded list of wms and xmonad is not one of them. (this fixes cisco asdm).
        }
 
 myUrgencyHook height width = withUrgencyHook dzenUrgencyHook
