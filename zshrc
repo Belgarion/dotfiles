@@ -61,7 +61,7 @@ if which vimmanpager >&/dev/null; then
 	export MANPAGER="vimmanpager"
 elif which vim >&/dev/null; then
 	export MANPAGER="/bin/sh -c \"unset PAGER;col -b -x | \
-	  vim -R -c 'set ft=man nomod nolist' -c 'map q :q<CR>' \
+	  vim -R -c 'set ft=man nomod nolist nonu' -c 'map q :q<CR>' \
 	  -c 'map <SPACE> <C-D>' -c 'map b <C-U>' \
 	  -c 'nmap K :Man <C-R>=expand(\\\"<cword>\\\")<CR><CR>' -\""
 fi
