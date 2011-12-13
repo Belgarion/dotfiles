@@ -144,20 +144,15 @@ myUrgencyHook height width = withUrgencyHook dzenUrgencyHook
 startup home = do
     spawn (home ++ "/resolution") -- set resolution to 1920x1200 with correct modeline
     spawn "xset -b b off" -- disable bell
-    --spawn "xset m 9/8 10" --mouse acceleration
     spawn "xset m 0 0" -- disable mouse acceleration
     spawn "xset r rate 200 25" -- keyboard repeat
-    --spawn "xmodmap ~/.Xmodmap" -- Xmodmap
     spawn "xrdb -merge ~/.Xdefaults"
-    --spawn "nvidia-settings -a InitialPixmapPlacement=2"
     spawn "pidgin"
     spawn "thunderbird"
-    --spawn "akregator"
-    --spawn (home ++ "/C++/irssi-notifier/daemon >&/dev/null") -- irssi notification dameon
-    --spawn "korgac -icon korgac"
     spawn (home ++ "/bin/start_gnome-screensaver")
     spawn "gnome-screensaver-command --lock"
     spawn "setxkbmap se dvorak -option ctrl:swapcaps"
+    spawn "xcompmgr"
 
 restart_xmonad :: X ()
 restart_xmonad = do
@@ -276,6 +271,8 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask, button3), (\w -> focus w >> Flex.mouseResizeWindow w)) -- Set the window to floating mode and resize by dragging
     , ((modMask, button4), (\_ -> prevWS)) -- Switch to previous workspace
     , ((modMask, button5), (\_ -> nextWS)) -- Switch to next workspace
+    , ((modMask .|. shiftMask, button4), (\w -> focus w >> spawn "transset-df -p 0.1 --inc")) -- increase opacity
+    , ((modMask .|. shiftMask, button5), (\w -> focus w >> spawn "transset-df -p 0.1 --dec")) -- decrease opacity
     ]
 
 -- Window rules:

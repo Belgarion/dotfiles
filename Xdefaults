@@ -44,8 +44,11 @@ urxvt*scrollBar:	plain
 !urxvt*color14:	#54FFFF
 !urxvt*color15:	#FFFFFF
 urxvt*Foreground:	white
-urxvt*background:	#444444
+!urxvt*background:	#444444
+urxvt*background: rgba:4400/4400/4400/dede
 urxvt*foreground:	white
+urxvt*transparent: false
+urxvt*depth: 32
 !urxvt.font: xft:Terminus:pixelsize=8
 !urxvt.font: -*-terminus-medium-*-*-*-14-*-*-*-*-*-*-*,-misc-fixed-medium-r-normal--14-*-*-*-*-*-iso10646-1
 urxvt*font:                            -*-terminus-*-*-*-*-12-*-*-*-*-*-*-*
