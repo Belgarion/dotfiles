@@ -367,6 +367,7 @@ function! LightBG()
 	hi Comment gui=none
 	highlight OverLength ctermbg=black guibg=black
 	highlight ExtraWhitespace ctermbg=red guibg=red
+	hi link Include PreProc
 endfunction
 command! LightBG call LightBG()
 
@@ -382,6 +383,7 @@ function! DarkBG()
 	hi Comment gui=none
 	highlight OverLength ctermbg=black guibg=black
 	highlight ExtraWhitespace ctermbg=red guibg=red
+	hi link Include PreProc
 endfunction
 command! DarkBG call DarkBG()
 
