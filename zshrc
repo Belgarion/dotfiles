@@ -101,6 +101,8 @@ alias man='LC_ALL=C LANG=C man'
 fsource ~/.aliases
 fsource ~/.zsh/git
 fsource ~/.zsh/prompt
+fsource ~/.zsh/bindkey
+fsource ~/.zsh/syntax-highlighting
 
 fpath=(~/.zsh/completion $fpath)
 
@@ -117,7 +119,6 @@ else
 	mailpath[$#mailpath+1]="$MAIL?You have new mail."
 fi
 
-fsource ~/.zsh/bindkey
 
 ### VARIABLES
 export CONCURRENCY_LEVEL=3
@@ -186,3 +187,4 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 #export AWT_TOOLKIT=MToolkit
 
 export ANDROID_JAVA_HOME=$JAVA_HOME
+
