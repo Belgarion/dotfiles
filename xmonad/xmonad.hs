@@ -1,5 +1,7 @@
 -- vim: fdm=marker sw=4 sts=4 ts=4 et ai
 
+{-# LANGUAGE ForeignFunctionInterface #-}
+
 ------------------------------------------------------------------------
 -- ~/.xmonad/xmonad.hs
 -- validate syntax: $ xmonad --recompile
@@ -48,6 +50,22 @@ import qualified XMonad.Actions.FlexibleResize as Flex
 import qualified XMonad.StackSet as W
 --import XMonad.Hooks.ICCCMFocus -- use in next xmonad-contrib to fix focus bugs
 
+-- Begin getHostName
+import Foreign.C.Types
+import Foreign.C.String
+import Foreign.C.Error
+import Foreign.Marshal.Array
+
+foreign import ccall unsafe "gethostname" gethostname :: CString -> CSize -> IO CInt
+
+getHostName :: IO HostName
+getHostName = allocaArray0 size $ \cstr -> do
+        throwErrnoIfMinus1_ "getHostName" $ gethostname cstr (fromIntegral size)
+        peekCString cstr
+    where size = 256
+
+type HostName = String
+-- End getHostName
 
 
 -- Settings {{{
@@ -103,29 +121,27 @@ main = do
     din2 <- spawnPipe myTopBar
     din3 <- spawnPipe myBottomBar
 
-    sp <- mkSpawner
-
     spawn ("stalonetray -bg '" ++ myNormalBGColor ++ "'") -- tray
     spawn ("xsetroot -solid '" ++ myNormalBGColor ++ "'") -- set background color
     spawn "numlockx on" -- activate numlock
     spawn "xsetroot -cursor_name left_ptr" --set mouse cursor
     spawn "nitrogen --restore" -- set background
 
+    hostname <- getHostName
     file <- doesFileExist "/tmp/xmonad_restart"
     if (file)
       then removeFile "/tmp/xmonad_restart"
-      else startup home
+      else startup home hostname
 
     xmonad $ myUrgencyHook myHeight myWidth $ defaultConfig
        { normalBorderColor = myNormalBorderColor
        , focusedBorderColor = myFocusedBorderColor
        , terminal = myTerminal
        , layoutHook = windowNavigation myLayout
-       , manageHook = manageSpawn sp <+> myManageHook <+> manageDocks
+       , manageHook = manageSpawn <+> myManageHook <+> manageDocks
        , workspaces = ["1:term", "2:www", "3:mail", "4:im"] ++ map show [5..18 ::Int]
-       , numlockMask = mod2Mask
        , modMask = mod1Mask
-       , keys = myKeys sp
+       , keys = myKeys
        , mouseBindings = myMouseBindings
        , borderWidth = 1
        , logHook = do
@@ -141,18 +157,34 @@ myUrgencyHook height width = withUrgencyHook dzenUrgencyHook
     , "-fg", "#0077cc", "-fn", myFont] }
 
 
-startup home = do
-    spawn (home ++ "/resolution") -- set resolution to 1920x1200 with correct modeline
-    spawn "xset -b b off" -- disable bell
-    spawn "xset m 0 0" -- disable mouse acceleration
-    spawn "xset r rate 200 25" -- keyboard repeat
-    spawn "xrdb -merge ~/.Xdefaults"
+startup :: String -> HostName -> IO ()
+startup home "Kheldar" = do
+    startup home "default"
+
+    spawn "wicd-gtk"
+
+startup home "Belgarion" = do
+    startup home "default"
+
     spawn "pidgin"
     spawn "thunderbird"
     spawn (home ++ "/bin/start_gnome-screensaver")
     spawn "gnome-screensaver-command --lock"
-    spawn "setxkbmap se dvorak -option ctrl:swapcaps"
     spawn "xcompmgr"
+
+startup home "taurus" = do
+    startup home "default"
+
+    spawn "xset m 0 150" -- mouse acceleration
+
+startup home hostname = do -- default
+    spawn "xset -b b off" -- disable bell
+    spawn "xset m 0 0" -- disable mouse acceleration
+    spawn "xset r rate 200 25" -- keyboard repeat
+    spawn "xrdb -merge ~/.Xdefaults"
+    spawn "setxkbmap se dvorak -option ctrl:swapcaps"
+    spawn "gnome-screensaver"
+
 
 restart_xmonad :: X ()
 restart_xmonad = do
@@ -203,10 +235,10 @@ myXPConfig = defaultXPConfig
     }
 
 -- Key bindings:
-myKeys sp conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
+myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask,   xK_Return), spawn $ XMonad.terminal conf)
     , ((mod4Mask,                xK_w     ), spawn "nitrogen --sort=alpha ~/Wallpapers")
-    , ((mod4Mask,                xK_p     ), shellPromptHere sp myXPConfig)
+    , ((mod4Mask,                xK_p     ), shellPromptHere myXPConfig)
     , ((mod4Mask,                xK_l     ), spawn "gnome-screensaver-command --lock")
     , ((modMask,                 xK_Print ), spawn "scrot desk_%Y-%m-%d-%H%M%S_$wx$h.png -d 1 -e 'mv $f ~/screenshots/' ") -- take a screenshot
     , ((modMask .|. controlMask, xK_x     ), kill) -- close focused window
@@ -281,7 +313,6 @@ myManageHook = composeAll . concat $
     [ [className =? c --> doFloat | c <- myFloats]
     , [title =? t --> doFloat | t <- myOtherFloats]
     , [resource =? r --> doIgnore | r <- myIgnores]
-    , [className =? "Firefox-bin" --> doF (W.shift "2:www")]
     , [className =? "Thunderbird" --> doF (W.shift "3:mail")]
     , [className =? "Pidgin" --> doF (W.shift "4:im")]
     , [className =? "Eclipse" --> doF (W.shift "10")]
