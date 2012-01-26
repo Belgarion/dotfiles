@@ -317,6 +317,7 @@ if has("autocmd")
 	autocmd BufNewFile,BufRead /etc/apache2/* set filetype=apache
 	autocmd BufNewFile,BufRead *.pd set filetype=html
 	autocmd BufNewFile,BufRead modprobe.conf set syntax=modconf
+	autocmd BufNewFile,BufRead *.pde,*.ino set ft=arduino
 	autocmd BufReadCmd *.jar,*.war,*.ear,*.sar,*.rar,*.xpi call zip#Browse(expand("<amatch>"))
 
 	" omnicomplete
