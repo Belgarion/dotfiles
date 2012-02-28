@@ -231,6 +231,8 @@ alias rsync-cont='rsync -rlptDv --append'
 alias rsync='rsync --progress'
 alias info='pinfo'
 alias mouseacc='xset m 9/8 10'
+alias rdesktop='rdesktop -r sound'
+alias vacuum_firefox='for i in ~/.mozilla/firefox/*/*.sqlite; do echo "VACUUM;" | sqlite3 $i ; done'
 
 upload_terminfo() {
 	infocmp | ssh $1 'dd of=term.terminfo; tic -C term.terminfo | sed "\$s/$/AF=\\\\E[3%dm:AB=\\\\E[4%dm:/" >> .termcap; rm -f term.terminfo'
