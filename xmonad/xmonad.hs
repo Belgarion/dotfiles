@@ -163,6 +163,8 @@ startup home "Kheldar" = do
     startup home "default"
 
     spawn "wicd-gtk"
+    spawn (home ++ "/.dropbox-dist/dropbox")
+    spawn "xflux -l 65 -g 21"
 
 startup home "Belgarion" = do
     startup home "default"
