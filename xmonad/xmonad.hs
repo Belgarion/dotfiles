@@ -164,7 +164,7 @@ startup home "Kheldar" = do
 
     spawn "wicd-gtk"
     spawn (home ++ "/.dropbox-dist/dropbox")
-    spawn "xflux -l 65 -g 21"
+    spawn "xflux -l 65.8 -g 22"
 
 startup home "Belgarion" = do
     startup home "default"
@@ -174,6 +174,7 @@ startup home "Belgarion" = do
     spawn (home ++ "/bin/start_gnome-screensaver")
     spawn "gnome-screensaver-command --lock"
     spawn "xcompmgr"
+    spawn "gtk-redshift -l 65.8:22"
 
 startup home "taurus" = do
     startup home "default"
