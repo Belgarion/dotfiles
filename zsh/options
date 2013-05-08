@@ -38,6 +38,8 @@ setopt extended_history
 setopt hist_ignore_dups
 # Commands are added to the history file as they are entered.
 setopt inc_append_history
+# Verify history before running command
+setopt hist_verify
 #}}}
 ### Input/Output ### {{{
 # Prevent accidental overwriting of files with >
