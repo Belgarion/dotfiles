@@ -18,7 +18,7 @@
 	untracked = cyan
 [user]
 	name = Sebastian
-	email = sebbe1991+git@gmail.com
+	email = belgarion@brokenbrain.se
 [core]
 	excludesfile = ~/.gitignore
 	pager = less
