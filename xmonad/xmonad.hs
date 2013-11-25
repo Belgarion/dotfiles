@@ -1,5 +1,7 @@
 -- vim: fdm=marker sw=4 sts=4 ts=4 et ai
 
+{-# LANGUAGE ForeignFunctionInterface #-}
+
 ------------------------------------------------------------------------
 -- ~/.xmonad/xmonad.hs
 -- validate syntax: $ xmonad --recompile
@@ -12,11 +14,12 @@ import XMonad hiding (Tall)
 import XMonad.Actions.CycleWS
 import XMonad.Actions.NoBorders
 import XMonad.Actions.SpawnOn
+import XMonad.Actions.GridSelect
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.UrgencyHook
---import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.EwmhDesktops
 import XMonad.Layout.HintedTile
 import XMonad.Layout.ResizableTile
 --import XMonad.Layout.LayoutHints
@@ -28,6 +31,7 @@ import XMonad.ManageHook
 import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Util.Run
+import XMonad.Hooks.SetWMName
 --import Text.Regex.Posix
 import System.Exit
 import System.IO
@@ -45,6 +49,24 @@ import qualified Data.Map as M
 import qualified System.IO.UTF8
 import qualified XMonad.Actions.FlexibleResize as Flex
 import qualified XMonad.StackSet as W
+--import XMonad.Hooks.ICCCMFocus -- use in next xmonad-contrib to fix focus bugs
+
+-- Begin getHostName
+import Foreign.C.Types
+import Foreign.C.String
+import Foreign.C.Error
+import Foreign.Marshal.Array
+
+foreign import ccall unsafe "gethostname" gethostname :: CString -> CSize -> IO CInt
+
+getHostName :: IO HostName
+getHostName = allocaArray0 size $ \cstr -> do
+        throwErrnoIfMinus1_ "getHostName" $ gethostname cstr (fromIntegral size)
+        peekCString cstr
+    where size = 256
+
+type HostName = String
+-- End getHostName
 
 
 -- Settings {{{
@@ -100,33 +122,35 @@ main = do
     din2 <- spawnPipe myTopBar
     din3 <- spawnPipe myBottomBar
 
-    sp <- mkSpawner
-
-    spawn ("stalonetray -i 16 --max-width 128 --geometry 128x16-0-0 -bg '" ++ myNormalBGColor ++ "'") -- tray
+    spawn ("stalonetray -bg '" ++ myNormalBGColor ++ "'") -- tray
     spawn ("xsetroot -solid '" ++ myNormalBGColor ++ "'") -- set background color
     spawn "numlockx on" -- activate numlock
     spawn "xsetroot -cursor_name left_ptr" --set mouse cursor
     spawn "nitrogen --restore" -- set background
 
+    hostname <- getHostName
     file <- doesFileExist "/tmp/xmonad_restart"
     if (file)
       then removeFile "/tmp/xmonad_restart"
-      else startup home
+      else startup home hostname
 
-    xmonad $ myUrgencyHook myHeight myWidth $ defaultConfig
+    xmonad $ myUrgencyHook myHeight myWidth $ ewmh defaultConfig
        { normalBorderColor = myNormalBorderColor
        , focusedBorderColor = myFocusedBorderColor
        , terminal = myTerminal
        , layoutHook = windowNavigation myLayout
-       , manageHook = manageSpawn sp <+> myManageHook <+> manageDocks
+       , manageHook = manageSpawn <+> myManageHook <+> manageDocks
+       , handleEventHook = handleEventHook defaultConfig <+> fullscreenEventHook
        , workspaces = ["1:term", "2:www", "3:mail", "4:im"] ++ map show [5..18 ::Int]
-       , numlockMask = mod2Mask
        , modMask = mod1Mask
-       , keys = myKeys sp
+       , keys = myKeys
        , mouseBindings = myMouseBindings
        , borderWidth = 1
-       , logHook = dynamicLogWithPP $ myLogHook din home
+       , logHook = do
+           --takeTopFocus -- use in next xmonad-contrib to fix focus bugs (http://code.google.com/p/xmonad/issues/detail?id=177)
+           dynamicLogWithPP $ myLogHook din home
        , focusFollowsMouse = True
+       , startupHook = setWMName "LG3D" -- fix java bug with non reparenting wm, because sun/oracle jdk uses a hardcoded list of wms and xmonad is not one of them. (this fixes cisco asdm).
        }
 
 myUrgencyHook height width = withUrgencyHook dzenUrgencyHook
@@ -135,22 +159,37 @@ myUrgencyHook height width = withUrgencyHook dzenUrgencyHook
     , "-fg", "#0077cc", "-fn", myFont] }
 
 
-startup home = do
-    spawn (home ++ "/resolution") -- set resolution to 1920x1200 with correct modeline
-    spawn "xset -b b off" -- disable bell
-    --spawn "xset m 9/8 10" --mouse acceleration
-    spawn "xset m 0 0" -- disable mouse acceleration
-    spawn "xset r rate 200 25" -- keyboard repeat
-    --spawn "xmodmap ~/.Xmodmap" -- Xmodmap
-    spawn "xrdb -merge ~/.Xdefaults"
-    --spawn "nvidia-settings -a InitialPixmapPlacement=2"
+startup :: String -> HostName -> IO ()
+startup home "Kheldar" = do
+    startup home "default"
+
+    spawn "wicd-gtk"
+    spawn (home ++ "/.dropbox-dist/dropbox")
+    spawn "gtk-redshift -l 65.8:22"
+
+startup home "Belgarion" = do
+    startup home "default"
+
     spawn "pidgin"
     spawn "thunderbird"
-    --spawn "akregator"
-    --spawn (home ++ "/C++/irssi-notifier/daemon >&/dev/null") -- irssi notification dameon
-    --spawn "korgac -icon korgac"
     spawn (home ++ "/bin/start_gnome-screensaver")
     spawn "gnome-screensaver-command --lock"
+    spawn "xcompmgr"
+    spawn "gtk-redshift -l 65.8:22 -t 6500:3700"
+
+startup home "taurus" = do
+    startup home "default"
+
+    spawn "xset m 0 150" -- mouse acceleration
+
+startup home hostname = do -- default
+    spawn "xset -b b off" -- disable bell
+    spawn "xset m 0 0" -- disable mouse acceleration
+    spawn "xset r rate 200 25" -- keyboard repeat
+    spawn "xrdb -merge ~/.Xdefaults"
+    spawn "setxkbmap se dvorak -option ctrl:swapcaps"
+    spawn "gnome-screensaver"
+
 
 restart_xmonad :: X ()
 restart_xmonad = do
@@ -201,10 +240,10 @@ myXPConfig = defaultXPConfig
     }
 
 -- Key bindings:
-myKeys sp conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
+myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask,   xK_Return), spawn $ XMonad.terminal conf)
     , ((mod4Mask,                xK_w     ), spawn "nitrogen --sort=alpha ~/Wallpapers")
-    , ((mod4Mask,                xK_p     ), shellPromptHere sp myXPConfig)
+    , ((mod4Mask,                xK_p     ), shellPromptHere myXPConfig)
     , ((mod4Mask,                xK_l     ), spawn "gnome-screensaver-command --lock")
     , ((modMask,                 xK_Print ), spawn "scrot desk_%Y-%m-%d-%H%M%S_$wx$h.png -d 1 -e 'mv $f ~/screenshots/' ") -- take a screenshot
     , ((modMask .|. controlMask, xK_x     ), kill) -- close focused window
@@ -232,6 +271,7 @@ myKeys sp conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. controlMask, xK_d     ), withFocused $ windows . W.sink) -- push window back into tiling
     , ((modMask .|. controlMask .|. shiftMask, xK_Left ), sendMessage (IncMasterN 1)) -- increment the number of windows in the master area
     , ((modMask .|. controlMask .|. shiftMask, xK_Right), sendMessage (IncMasterN (-1))) -- decrement the number of windows in the master area
+    , ((mod4Mask,                 xK_g     ), goToSelected defaultGSConfig)
 
     -- multimedia keys
     , ((0, 0x1008ff11), spawn "amixer -q set Master 2%-")    -- XF86AudioLowerVolume
@@ -258,7 +298,7 @@ myKeys sp conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     ]
     ++
     [ ((m .|. mod4Mask, key), screenWorkspace sc >>= flip whenJust (windows . f))
-    | (key, sc) <- zip [xK_q, xK_w, xK_e] [0..] -- win-{q,w,e}, Switch to physical/Xinerama screens 1, 2, or 3
+    | (key, sc) <- zip [xK_aring, xK_adiaeresis, xK_odiaeresis] [0..] -- win-{q,w,e}, Switch to physical/Xinerama screens 1, 2, or 3
     , (f, m) <- [(W.view, 0), (W.shift, shiftMask)] -- win-shift-{q,w,e}, Move client to screen 1, 2, or 3
     ]
 
@@ -269,6 +309,8 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask, button3), (\w -> focus w >> Flex.mouseResizeWindow w)) -- Set the window to floating mode and resize by dragging
     , ((modMask, button4), (\_ -> prevWS)) -- Switch to previous workspace
     , ((modMask, button5), (\_ -> nextWS)) -- Switch to next workspace
+    , ((modMask .|. shiftMask, button4), (\w -> focus w >> spawn "transset-df -p 0.1 --inc")) -- increase opacity
+    , ((modMask .|. shiftMask, button5), (\w -> focus w >> spawn "transset-df -p 0.1 --dec")) -- decrease opacity
     ]
 
 -- Window rules:
@@ -277,14 +319,13 @@ myManageHook = composeAll . concat $
     [ [className =? c --> doFloat | c <- myFloats]
     , [title =? t --> doFloat | t <- myOtherFloats]
     , [resource =? r --> doIgnore | r <- myIgnores]
-    , [className =? "Firefox-bin" --> doF (W.shift "2:www")]
     , [className =? "Thunderbird" --> doF (W.shift "3:mail")]
     , [className =? "Pidgin" --> doF (W.shift "4:im")]
     , [className =? "Eclipse" --> doF (W.shift "10")]
     , [isFullscreen --> doFullFloat]
     ]
     where
-    myFloats = ["ekiga", "Gimp", "gimp", "MPlayer", "Nitrogen", "Transmission-gtk", "Xmessage", "xmms"]
+    myFloats = ["ekiga", "Gimp", "gimp", "MPlayer", "Nitrogen", "Transmission-gtk", "Xmessage", "xmms", "Steam"]
     myOtherFloats = ["Downloads", "Iceweasel Preferences", "Save As...", "Compose: (no subject)", "Icedove Preferences", "Tag and File Name scan", "Preferences...", "Confirm...", "gmpc - Configuration", "gmpc - song info", "Save Playlist", "GQview Preferences", "Inkscape Preferences (Shift+Ctrl+P)", "Select file to open", "Select file to save to", "Warning", "Closing Project - K3b", "Open Files - K3b", "Options - K3b", "Close Nicotine-Plus?", "Nicotine Settings", "OpenOffice.org 2.0", "Open", "Options - OpenOffice.org - User Data", "File Properties", "Preference", "Plugins:", "Preferences", "Firefox - Återställ föregående session", "Firefox-inställningar", "StepMania - pop * candy -", "Custom Smiley Manager", "Insticksmoduler", "Systemlogg", "Volbar", "Minecraft Launcher", "Minecraft"]
     myIgnores = ["stalonetray", "trayer"]
 

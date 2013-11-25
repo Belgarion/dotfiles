@@ -7,10 +7,11 @@ else
 endif
 
 if has("unix")
-	let &shell="zsh"
+	if executable("zsh")
+		let &shell="zsh"
+	endif
 	set clipboard=autoselect
 endif
-
 " }}}
 " {{{ Terminals and colors
 " {{{ Makes title work in screen
@@ -18,7 +19,7 @@ if &term == "screen" || &term == "screen-256color"
   set t_ts=]0;
   set t_fs=\
 endif
-if &term == "screen" || &term == "screen-256color" || &term == "xterm" 
+if &term == "screen" || &term == "screen-256color" || &term == "xterm"
   set title
 endif
 " }}}
@@ -40,11 +41,11 @@ if &term =~ "vt100"
   set t_Co=8           "set number of colors
   set t_Sf=[3%p1%dm  "set foreground color
   set t_Sb=[4%p1%dm  "set background color
-  if osys == "Linux"
+  if osys =~? "Linux"
 	  set t_kD=[3~      "fix delete button
 	  set t_kh=[1~      "fix home button
 	  set t_@7=[4~      "fix end button
-  elseif osys == "FreeBSD"
+  elseif osys =~? "FreeBSD"
 	  "set t_kD=[3~      "fix delete button
 	  set t_kh=[H      "fix home button
 	  set t_@7=[F      "fix end button
@@ -316,6 +317,7 @@ if has("autocmd")
 	autocmd BufNewFile,BufRead /etc/apache2/* set filetype=apache
 	autocmd BufNewFile,BufRead *.pd set filetype=html
 	autocmd BufNewFile,BufRead modprobe.conf set syntax=modconf
+	autocmd BufNewFile,BufRead *.pde,*.ino set ft=arduino
 	autocmd BufReadCmd *.jar,*.war,*.ear,*.sar,*.rar,*.xpi call zip#Browse(expand("<amatch>"))
 
 	" omnicomplete
@@ -344,12 +346,6 @@ if has("autocmd")
 endif
 "}}}
 " {{{ Theme
-colorscheme zenburn
-set background=dark
-hi Normal ctermbg=black
-hi LineNr ctermbg=black guibg=#3f3f3f
-hi Pmenu ctermbg=236
-hi Comment gui=none
 
 highlight OverLength ctermbg=black guibg=black
 "autocmd BufNewFile,BufRead *.c,*.cpp,*.php,*.py syn match OverLength /\%>80v.\+/ containedin=ALL
@@ -361,22 +357,35 @@ autocmd BufNewFile,BufRead * syn match ExtraWhitespace /\s\+$/ containedin=ALL
 let g:bg = 0
 
 function! LightBG()
+	set background=dark
+	colorscheme zenburn
 	if &t_Co == 256
 		hi Normal ctermbg=238
 		hi LineNr ctermbg=237 ctermfg=248
 		hi NonText ctermfg=242
-		set background=dark
+		"set background=dark
+		hi Pmenu ctermbg=236
 	endif
+	hi Comment gui=none
+	highlight OverLength ctermbg=black guibg=black
+	highlight ExtraWhitespace ctermbg=red guibg=red
+	hi link Include PreProc
 endfunction
 command! LightBG call LightBG()
 
 function! DarkBG()
+	set background=dark
+	colorscheme zenburn
 	if &t_Co == 256
 		hi Normal ctermbg=black
 		hi LineNr ctermfg=248 ctermbg=0
 		hi NonText ctermfg=238
-		set background=dark
+		hi Pmenu ctermbg=236
 	endif
+	hi Comment gui=none
+	highlight OverLength ctermbg=black guibg=black
+	highlight ExtraWhitespace ctermbg=red guibg=red
+	hi link Include PreProc
 endfunction
 command! DarkBG call DarkBG()
 
@@ -393,7 +402,7 @@ command! ToggleBG call ToggleBG()
 
 LightBG
 
-if osys=="windows"
+if osys ==? "windows"
 	set guifont=ter-112n:h9
 	set printfont=ter-112n:h9
 else
@@ -402,12 +411,22 @@ else
 endif
 " }}}
 " {{{ Host Specific
-if $HOSTNAME == "nas"
+if osys =~? "Linux"
+	let domainname = system('domainname -d')
+else
+	let domainname = "unknown domain"
+endif
+
+if domainname =~? "ludd\.ltu\.se"
+	set pdev=Edison
+endif
+
+if $HOSTNAME ==? "nas"
 	let Tlist_Auto_Open = 0
 	let loaded_matchparen = 1
-elseif $HOSTNAME == "polgara"
+elseif $HOSTNAME ==? "polgara"
 	let loaded_matchparen = 1
-elseif $HOSTNAME == "belgarion"
+elseif $HOSTNAME ==? "belgarion"
 	set pdev=MP640R
 endif
 " }}}

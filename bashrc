@@ -8,7 +8,7 @@
 UNAMES=`uname -s`
 export UNAMES
 
-echo $LANG | grep -i utf >/dev/null && UTF8=1 || UTF8=0
+echo $LANG | 'grep' -i utf >/dev/null && UTF8=1 || UTF8=0
 
 # don't put duplicate lines in the history. See bash(1) for more options
 export HISTCONTROL=ignoredups
@@ -70,7 +70,7 @@ if (which most >&/dev/null); then
 	export PAGER="most -s"
 	export BROWSER="most -s"
 fi
-[ -f ~/.sh/less_colors ] && . ~/.sh/less_colors 
+[ -f ~/.sh/less_colors ] && . ~/.sh/less_colors
 export LESS='-R -M --shift 5'
 (which lesspipe.sh >&/dev/null) && export LESSOPEN='|lesspipe.sh %s'
 
@@ -110,3 +110,13 @@ if type keychain >&/dev/null; then
 	keychain ~/.ssh/id_rsa ~/.ssh/id_dsa
 	source ~/.keychain/${HOSTNAME}-sh
 fi
+
+[ -d /usr/local/bin ] && PATH="${PATH}":/usr/local/bin
+[ -d /usr/local/sbin ] && PATH="${PATH}":/usr/local/sbin
+
+# LUDD Paths
+[ -d /software/mips-sde/06.61/bin ] && PATH="${PATH}":/software/mips-sde/06.61/bin
+[ -d /usr/ccs/bin ] && PATH="${PATH}":/usr/ccs/bin
+[ -d /usr/ccs/sbin ] && PATH="${PATH}":/usr/ccs/sbin
+[ -d /opt/csw/bin ] && PATH="${PATH}":/opt/csw/bin
+[ -d /opt/csw/sbin ] && PATH="${PATH}":/opt/csw/sbin

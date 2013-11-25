@@ -1,6 +1,6 @@
-"2.1 (created: 2009/05/21 13:13:06)
+"3.0 (created: 2011/03/06 22:51:04)
 
-set guioptions=mBrb
+set noautocomplete
 set runtimepath=/home/sebastian/.vimperator
 source! /home/sebastian/.vimperatorrc.local
 

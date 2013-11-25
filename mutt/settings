@@ -1,6 +1,8 @@
 # vim:ft=muttrc
 
 set pop_authenticators="user"
+set imap_authenticators="gssapi:digest-md5:cram-md5:plain"
+set smtp_authenticators="gssapi:digest-md5:cram-md5:plain"
 set pager_context=1
 set pager_index_lines=6                 #show a mini-index in pager
 set menu_scroll

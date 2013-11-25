@@ -1,7 +1,7 @@
-set path = (~/apps/bin $path)
+set path = (~/apps/bin ~/apps/sparc/bin ~/apps/sparc/jre1.6.0_26/bin/sparcv9 $path)
 
 if ( $?prompt ) then
 	if ( $shlvl < 2 ) then
-		exec zsh
+		which zsh > /dev/null && exec zsh
 	endif
 endif

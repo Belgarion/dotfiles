@@ -29,6 +29,14 @@ __screen_config() {
 	screen_cmd setenv SCREEN_FIX_HOST ${HOSTNAME}
 	export SCREEN_FIX_HOST=${HOSTNAME}
 }
+__screen_local() {
+	# Set the escape to ^qq
+	screen_cmd defescape q
+	screen_cmd escape q
+
+	screen_cmd bindkey -k k3 prev
+	screen_cmd bindkey -k k4 next
+}
 __screen_host_default() {
 	# Set the escape to ^aa
 	screen_cmd defescape a
@@ -67,8 +75,12 @@ __screen_host_Belkira() {
 	# PuTTY
 	screen_cmd bindkey "[13~" prev
 	screen_cmd bindkey "[14~" next
+	__screen_local
+}
+__screen_host_Kheldar() {
+	__screen_local
 }
 
 [ ${STY} ] && [[ ${SCREEN_FIX_HOST} != ${HOSTNAME} ]] && __screen_config
-unset __screen_config __screen_host_default __screen_host_Belgarion
+unset __screen_config __screen_local __screen_host_default __screen_host_Belgarion __screen_host_Kheldar
 # End of screen per-host configuration

@@ -17,7 +17,7 @@
 	changed = green
 	untracked = cyan
 [user]
-	name = Sebastian
+	name = Sebastian Larsson
 	email = belgarion@brokenbrain.se
 [core]
 	excludesfile = ~/.gitignore

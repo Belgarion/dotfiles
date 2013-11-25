@@ -16,3 +16,5 @@ for i in *; do
 		ln -sf $dir/$i ~/.$i
 	fi
 done
+
+echo "Remember to change user.name, user.email, github.user in ~/.gitconfig"

@@ -35,6 +35,16 @@ ssh() {
 }
 alias ssh-x='ssh -c arcfour,blowfish-cbc -XC'
 
+aklog-ltu() {
+	if [[ $# -le 0 ]]; then
+		print "Usage: $0 <username>"
+		return 1
+	fi
+	KRB5CCNAME=/tmp/krb5cc_${UID}ltu
+	kinit $1@LTU.SE
+	aklog -d ltu.se
+}
+
 
 if [[ $UNAMES == "FreeBSD" ]]; then
 	alias dfh='df -hc -t nounionfs,nullfs '
@@ -190,7 +200,6 @@ else
 fi
 
 alias cd..='cd ..'
-alias cal='cal -m'
 alias rm='rm -i'
 alias mv='mv -i'
 alias tmux="tmux -2" # force 256-colors
@@ -207,7 +216,7 @@ alias man='LC_ALL=C LANG=C man'
 alias extract_initrd_here='zcat /initrd.img | cpio -i -d -H newc --no-absolute-filenames'
 alias mplayer='mplayer -slang eng -af volnorm'
 mplayer_rar() { unrar p -inul $1 | mplayer -af volnorm - ; }
-mplayer_dvd() { mplayer -af volnorm -dvd-device "$1" dvd:// }
+mplayer_dvd() { mplayer -af volnorm -dvd-device "$1" dvd:// ; }
 alias wine='XMODIFIER="" XMODIFIERS="" wine'
 alias dm7020_path='export PATH=/opt/dm7020/bin:$PATH'
 alias du='du -c'
@@ -221,6 +230,8 @@ alias rsync-cont='rsync -rlptDv --append'
 alias rsync='rsync --progress'
 alias info='pinfo'
 alias mouseacc='xset m 9/8 10'
+alias rdesktop='rdesktop -r sound'
+alias vacuum_firefox='for i in ~/.mozilla/firefox/*/*.sqlite; do echo "VACUUM;" | sqlite3 $i ; done'
 
 upload_terminfo() {
 	infocmp | ssh $1 'dd of=term.terminfo; tic -C term.terminfo | sed "\$s/$/AF=\\\\E[3%dm:AB=\\\\E[4%dm:/" >> .termcap; rm -f term.terminfo'
@@ -326,6 +337,8 @@ elif [[ "$UNAMES" == "Linux" || "${UNAMES%_*}" == "CYGWIN" ]]; then
 			eval "`dircolors -b ~/.DIR_COLORS`"
 		elif [ -f /etc/DIR_COLORS ]; then
 			eval "`dircolors -b /etc/DIR_COLORS`"
+		else
+			eval "`dircolors -b`"
 		fi
 
 		alias ls='ls --color=auto --ignore="lost+found" -F'
@@ -372,6 +385,8 @@ elif [[ "$UNAMES" == "Darwin" ]]; then
 			alias ls="ls -G -F"
 		fi
 	fi
+elif [[ "$UNAMES" == "SunOS" ]]; then
+	[[ -e /usr/sfw/bin/ggrep ]] && alias grep="/usr/sfw/bin/ggrep --color=auto"
 fi
 
 alias l='ls -CF'
@@ -448,3 +463,5 @@ if [ ! $ZSH_VERSION ]; then
 		printf "${CWD%/}"
 	}
 fi
+
+alias kismet='TERM=rxvt kismet'
