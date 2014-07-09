@@ -465,3 +465,4 @@ if [ ! $ZSH_VERSION ]; then
 fi
 
 alias kismet='TERM=rxvt kismet'
+alias dstat='dstat -cdngy -rpi'
