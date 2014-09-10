@@ -234,6 +234,8 @@ let use_xhtml = 1
 
 let g:calendar_monday=1
 
+let g:matchparen_insert_timeout=5
+
 let autodate_keyword_pre='Last Modified: '
 let autodate_keyword_post='$'
 let autodate_format='%a %Y-%m-%d %H:%M:%S (%z)'
