@@ -350,7 +350,8 @@ endif
 " {{{ Theme
 
 highlight OverLength ctermbg=black guibg=black
-autocmd BufNewFile,BufRead *.c,*.cpp,*.php,*.py syn match OverLength /\%>80v.\+/ containedin=ALL
+"autocmd BufNewFile,BufRead *.c,*.cpp,*.php,*.py syn match OverLength /\%>80v.\+/ containedin=ALL
+call matchadd('OverLength', '\%81v.\+', 100)
 
 highlight ExtraWhitespace ctermbg=red guibg=red
 autocmd BufNewFile,BufRead * syn match ExtraWhitespace /\s\+$/ containedin=ALL

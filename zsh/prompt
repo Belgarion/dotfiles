@@ -97,7 +97,7 @@ setprompt() {
 	which sha1sum 2>&1 >/dev/null && SHA="sha1sum"
 	[ -z $SHA ] && SHA="shasum"
 
-	hex_int=$(hostname | $SHA | tr '[a-z]' '[A-Z]' | sed -re 's/^(.).+$/\1/')
+	hex_int=$(hostname | $SHA | tr '[a-z]' '[A-Z]' | sed 's/^\(.\).*$/\1/')
 	case $((0x${hex_int} % 16)) in
 		0)  HOSTCOLOR=$PR_BLACK ;;
 		1)  HOSTCOLOR=$PR_LIGHT_CYAN ;;

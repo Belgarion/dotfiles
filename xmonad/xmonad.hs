@@ -19,7 +19,7 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.UrgencyHook
---import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.EwmhDesktops
 import XMonad.Layout.HintedTile
 import XMonad.Layout.ResizableTile
 --import XMonad.Layout.LayoutHints
@@ -134,12 +134,13 @@ main = do
       then removeFile "/tmp/xmonad_restart"
       else startup home hostname
 
-    xmonad $ myUrgencyHook myHeight myWidth $ defaultConfig
+    xmonad $ myUrgencyHook myHeight myWidth $ ewmh defaultConfig
        { normalBorderColor = myNormalBorderColor
        , focusedBorderColor = myFocusedBorderColor
        , terminal = myTerminal
        , layoutHook = windowNavigation myLayout
        , manageHook = manageSpawn <+> myManageHook <+> manageDocks
+       , handleEventHook = handleEventHook defaultConfig <+> fullscreenEventHook
        , workspaces = ["1:term", "2:www", "3:mail", "4:im"] ++ map show [5..18 ::Int]
        , modMask = mod1Mask
        , keys = myKeys
@@ -164,7 +165,7 @@ startup home "Kheldar" = do
 
     spawn "wicd-gtk"
     spawn (home ++ "/.dropbox-dist/dropbox")
-    spawn "xflux -l 65.8 -g 22"
+    spawn "gtk-redshift -l 65.8:22"
 
 startup home "Belgarion" = do
     startup home "default"
@@ -174,7 +175,7 @@ startup home "Belgarion" = do
     spawn (home ++ "/bin/start_gnome-screensaver")
     spawn "gnome-screensaver-command --lock"
     spawn "xcompmgr"
-    spawn "gtk-redshift -l 65.8:22"
+    spawn "gtk-redshift -l 65.8:22 -t 6500:3700"
 
 startup home "taurus" = do
     startup home "default"
@@ -270,7 +271,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. controlMask, xK_d     ), withFocused $ windows . W.sink) -- push window back into tiling
     , ((modMask .|. controlMask .|. shiftMask, xK_Left ), sendMessage (IncMasterN 1)) -- increment the number of windows in the master area
     , ((modMask .|. controlMask .|. shiftMask, xK_Right), sendMessage (IncMasterN (-1))) -- decrement the number of windows in the master area
-    , ((modMask,                 xK_g     ), goToSelected defaultGSConfig)
+    , ((mod4Mask,                 xK_g     ), goToSelected defaultGSConfig)
 
     -- multimedia keys
     , ((0, 0x1008ff11), spawn "amixer -q set Master 2%-")    -- XF86AudioLowerVolume
@@ -297,7 +298,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     ]
     ++
     [ ((m .|. mod4Mask, key), screenWorkspace sc >>= flip whenJust (windows . f))
-    | (key, sc) <- zip [xK_q, xK_w, xK_e] [0..] -- win-{q,w,e}, Switch to physical/Xinerama screens 1, 2, or 3
+    | (key, sc) <- zip [xK_aring, xK_adiaeresis, xK_odiaeresis] [0..] -- win-{q,w,e}, Switch to physical/Xinerama screens 1, 2, or 3
     , (f, m) <- [(W.view, 0), (W.shift, shiftMask)] -- win-shift-{q,w,e}, Move client to screen 1, 2, or 3
     ]
 
@@ -324,7 +325,7 @@ myManageHook = composeAll . concat $
     , [isFullscreen --> doFullFloat]
     ]
     where
-    myFloats = ["ekiga", "Gimp", "gimp", "MPlayer", "Nitrogen", "Transmission-gtk", "Xmessage", "xmms"]
+    myFloats = ["ekiga", "Gimp", "gimp", "MPlayer", "Nitrogen", "Transmission-gtk", "Xmessage", "xmms", "Steam"]
     myOtherFloats = ["Downloads", "Iceweasel Preferences", "Save As...", "Compose: (no subject)", "Icedove Preferences", "Tag and File Name scan", "Preferences...", "Confirm...", "gmpc - Configuration", "gmpc - song info", "Save Playlist", "GQview Preferences", "Inkscape Preferences (Shift+Ctrl+P)", "Select file to open", "Select file to save to", "Warning", "Closing Project - K3b", "Open Files - K3b", "Options - K3b", "Close Nicotine-Plus?", "Nicotine Settings", "OpenOffice.org 2.0", "Open", "Options - OpenOffice.org - User Data", "File Properties", "Preference", "Plugins:", "Preferences", "Firefox - Återställ föregående session", "Firefox-inställningar", "StepMania - pop * candy -", "Custom Smiley Manager", "Insticksmoduler", "Systemlogg", "Volbar", "Minecraft Launcher", "Minecraft"]
     myIgnores = ["stalonetray", "trayer"]
 
