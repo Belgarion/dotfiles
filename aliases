@@ -465,3 +465,12 @@ if [ ! $ZSH_VERSION ]; then
 fi
 
 alias kismet='TERM=rxvt kismet'
+alias dstat='dstat -cdngy -rpi'
+
+checkssl() {
+	if [ $# -lt 1 ]; then
+		echo "Usage: $0 <host:port>"
+		return
+	fi
+	echo | openssl s_client -connect $1 -servername ${1%%:*} 2>/dev/null | openssl x509 -noout -dates -subject -issuer -fingerprint -text
+}
