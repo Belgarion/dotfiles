@@ -186,6 +186,8 @@ fi
 
 type fortune >&/dev/null && fortune
 
+type krenew >&/dev/null && krenew -t
+
 export SDL_AUDIODRIVER="pulse"
 
 # Fix java in xmonad
