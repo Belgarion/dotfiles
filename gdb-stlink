@@ -1,0 +1,5 @@
+target extended-remote 127.0.0.1:3333
+monitor flash download = 1
+monitor flash device = STM32F107RC
+load
+monitor reset
