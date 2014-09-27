@@ -54,6 +54,7 @@ addToPath "^" "$HOME/apps/android-sdk-linux_x86/platform-tools"
 addToPath "^" "$HOME/apps/bin"
 addToPath "^" "$HOME/bin"
 addToPath "$" "/mnt/80G/Xilinx/13.1/ISE_DS/ISE/bin/lin64/"
+addToPath "$" "/opt/arm/bin"
 
 export LANG='sv_SE.UTF-8'
 export TZ="Europe/Stockholm"
