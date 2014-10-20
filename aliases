@@ -471,6 +471,7 @@ alias gdbarm_st='arm-none-eabi-gdb --command=~/.gdb-stlink '
 alias gdbarm_st_f0='arm-none-eabi-gdb --command=~/.gdb-stlinkf0 '
 
 alias openocd_stlink='openocd -f interface/stlink-v2.cfg -f target/stm32f1x_stlink.cfg'
+alias openocd_stlink_f1_chibios='openocd -f interface/stlink-v2.cfg -f target/stm32f1x_stlink.cfg -c "stm32f1x.cpu configure -rtos auto;"'
 alias openocd_stlink_f0='openocd -f interface/stlink-v2.cfg -f target/stm32f0x_stlink.cfg'
 
 alias dstat='dstat -cdngy -rpi'

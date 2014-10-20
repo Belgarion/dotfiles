@@ -340,6 +340,9 @@ if has("autocmd")
 	" Templates
 	autocmd BufNewFile * call Template(expand("%:e"))
 
+	" auto resize splits on window resize
+	autocmd VimResized * wincmd =
+
 	" Python {{{
 	autocmd FileType python set omnifunc=pythoncomplete#Complete
 	autocmd BufRead *.py set makeprg=python\ -c\ \"import\ py_compile,sys;\ sys.stderr=sys.stdout;\ py_compile.compile(r'%')\"
