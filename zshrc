@@ -42,6 +42,7 @@ addToPath() {
 
 addToPath "^" "/sbin"
 addToPath "^" "/bin"
+addToPath "^" "$HOME/.cabal/bin"
 addToPath "^" "/usr/sbin"
 addToPath "^" "/usr/bin"
 addToPath "^" "/usr/local/sbin"
@@ -198,3 +199,7 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 export ANDROID_JAVA_HOME=$JAVA_HOME
 
 export LC_CTYPE='sv_SE.UTF-8'
+
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line
