@@ -474,3 +474,5 @@ checkssl() {
 	fi
 	echo | openssl s_client -connect $1 -servername ${1%%:*} 2>/dev/null | openssl x509 -noout -dates -subject -issuer -fingerprint -text
 }
+
+alias meep='ping'

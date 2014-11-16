@@ -430,3 +430,5 @@ elseif $HOSTNAME ==? "belgarion"
 	set pdev=MP640R
 endif
 " }}}
+
+autocmd VimResized * wincmd =
