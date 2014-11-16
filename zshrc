@@ -42,11 +42,15 @@ addToPath() {
 
 addToPath "^" "/sbin"
 addToPath "^" "/bin"
+addToPath "^" "$HOME/.cabal/bin"
 addToPath "^" "/usr/sbin"
 addToPath "^" "/usr/bin"
 addToPath "^" "/usr/local/sbin"
 addToPath "^" "/usr/local/bin"
+addToPath "^" "/opt/local/bin"
 addToPath "$" "/opt/vmware/server/lib/bin"
+addToPath "^" "$HOME/SDK/android-sdk-macosx/tools/"
+addToPath "^" "$HOME/SDK/android-sdk-macosx/platform-tools/"
 addToPath "^" "$HOME/SDK/android-sdk-linux/tools/"
 addToPath "^" "$HOME/SDK/android-sdk-linux/platform-tools/"
 addToPath "^" "$HOME/apps/android-sdk-linux_x86/tools"
@@ -54,6 +58,8 @@ addToPath "^" "$HOME/apps/android-sdk-linux_x86/platform-tools"
 addToPath "^" "$HOME/apps/bin"
 addToPath "^" "$HOME/bin"
 addToPath "$" "/mnt/80G/Xilinx/13.1/ISE_DS/ISE/bin/lin64/"
+addToPath "$" "/opt/arm/bin"
+addToPath "$" "/usr/local/Cellar/gcc-arm-none-eabi-48/20131218"
 
 export LANG='sv_SE.UTF-8'
 export TZ="Europe/Stockholm"
@@ -192,3 +198,8 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 
 export ANDROID_JAVA_HOME=$JAVA_HOME
 
+export LC_CTYPE='sv_SE.UTF-8'
+
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line
