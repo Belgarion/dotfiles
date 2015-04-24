@@ -342,6 +342,7 @@ if has("autocmd")
 
 	" Python {{{
 	autocmd FileType python set omnifunc=pythoncomplete#Complete
+	autocmd BufNewFile,BufRead *.py setlocal noexpandtab tabstop=4
 	autocmd BufRead *.py set makeprg=python\ -c\ \"import\ py_compile,sys;\ sys.stderr=sys.stdout;\ py_compile.compile(r'%')\"
 	autocmd BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 	" }}}
