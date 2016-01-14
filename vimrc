@@ -340,6 +340,9 @@ if has("autocmd")
 	" Templates
 	autocmd BufNewFile * call Template(expand("%:e"))
 
+	" auto resize splits on window resize
+	autocmd VimResized * wincmd =
+
 	" Python {{{
 	autocmd FileType python set omnifunc=pythoncomplete#Complete
 	autocmd BufNewFile,BufRead *.py setlocal noexpandtab tabstop=4
