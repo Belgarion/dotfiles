@@ -484,3 +484,5 @@ checkssl() {
 }
 
 alias meep='ping'
+
+alias ntptime='date --date=@$((16#`printf "\xb%-47.s"|nc -uq1 ntp.ludd.ltu.se 123|xxd -s40 -l4 -p`-2208988800))'
